@@ -30,7 +30,7 @@ body {
   width: 100vw;
   height: 100vh;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 @supports (-webkit-touch-callout: none) {

@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './CrtScreen.module.css';
+import Image from 'next/image';
 
 type CrtScreenProps = {
-  children: React.ReactNode; 
+  children: React.ReactNode;
+  imageSrc?: string;
 };
 
-const CrtScreen = ({ children }: CrtScreenProps) => {
+const CrtScreen = ({ children, imageSrc }: CrtScreenProps) => {
   const contentRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
@@ -20,6 +22,19 @@ const CrtScreen = ({ children }: CrtScreenProps) => {
         <pre ref={contentRef} className={styles.content}>
           {children}
         </pre>
+        {imageSrc && (
+          <div className={styles.imageContainer}>
+            <Image
+              src={imageSrc}
+              alt="About me"
+              width={500}
+              height={600}
+              className={styles.aboutImage}
+              unoptimized
+              priority
+            />
+          </div>
+        )}
       </div>
     </div>
   );
