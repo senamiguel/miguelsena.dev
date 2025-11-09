@@ -7,9 +7,10 @@ export default function Home() {
 
   const PROMPT = "C:\\>";
   const COMMANDS: Record<string, string> = {
-    "help": "\nAvailable commands: \nhelp - Show a list of commands \ncls - Clear the screen \nrestart - Restart the session\n",
+    "help": "\nAvailable commands: \nhelp - Show a list of the available commands. \ncls - Clear the screen. \nrestart - Restart the session.\n",
+    "" :""
   };
-  
+
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const DEFAULT_DOS_TEXT = [
@@ -40,7 +41,7 @@ export default function Home() {
   useEffect(() => {
     const timerId = setInterval(() => {
       setShowCursor(prev => !prev);
-    }, 233);
+    }, 153);
 
     return () => {
       clearInterval(timerId);
@@ -52,20 +53,20 @@ export default function Home() {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)) {
         e.preventDefault();
       }
-      
+
       if (e.key === "Enter") {
         const lastLineIndex = dosText.lastIndexOf('\n');
         const currentLine = dosText.substring(lastLineIndex + 1);
         const commandText = currentLine.substring(PROMPT.length);
         const finalCommand = commandText.trim().toLowerCase();
-        
+
         if (finalCommand && !commandHistory.includes(finalCommand)) {
           setCommandHistory(prev => [...prev, finalCommand]);
         }
         setHistoryIndex(-1);
 
         setDosText((prev: string) => {
-          if (finalCommand === "cls") {
+          if (finalCommand === "cls" || finalCommand === "clear") {
             return PROMPT;
           }
 
@@ -75,14 +76,17 @@ export default function Home() {
           if (COMMANDS.hasOwnProperty(finalCommand)) {
             return prev + "\n" + COMMANDS[finalCommand] + "\n" + PROMPT;
           }
+          else{
+            return prev + `\nIllegal command: ${finalCommand}.\n` + PROMPT;
+          }
 
           return prev + "\n" + PROMPT;
         });
 
         setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
-        
+
       } else if (e.key === "Backspace") {
-        
+
         setDosText((prev: string) => {
           const lastLineIndex = prev.lastIndexOf('\n');
           const currentLine = prev.substring(lastLineIndex + 1);
@@ -114,7 +118,7 @@ export default function Home() {
         if (commandHistory.length > 0) {
           const newIndex = historyIndex < commandHistory.length - 1 ? historyIndex + 1 : historyIndex;
           setHistoryIndex(newIndex);
-          
+
           setDosText(prev => {
             const lastLineIndex = prev.lastIndexOf('\n');
             return prev.substring(0, lastLineIndex + 1) + PROMPT + commandHistory[commandHistory.length - 1 - newIndex];
@@ -125,7 +129,7 @@ export default function Home() {
         if (historyIndex > 0) {
           const newIndex = historyIndex - 1;
           setHistoryIndex(newIndex);
-          
+
           setDosText(prev => {
             const lastLineIndex = prev.lastIndexOf('\n');
             return prev.substring(0, lastLineIndex + 1) + PROMPT + commandHistory[commandHistory.length - 1 - newIndex];
@@ -159,6 +163,7 @@ export default function Home() {
       <CrtScreen>
         {dosText}
         {showCursor && "_"}
+
       </CrtScreen>
     </main>
   );
