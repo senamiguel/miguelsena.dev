@@ -287,12 +287,10 @@
     line-height: 1.5;
     transform: scale(0.95) translateZ(0);
     overflow-wrap: break-word;
-    word-break: break-word;
+    word-break: keep-all;
     max-width: 100%;
     white-space: pre-wrap;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-    -moz-hyphens: auto;
+    overflow-x: hidden;
   }
 
   .imageContainer {
@@ -347,12 +345,10 @@
     line-height: 1.6;
     transform: scale(0.97) translateZ(0);
     overflow-wrap: break-word;
-    word-break: break-word;
+    word-break: keep-all;
     max-width: 100%;
     white-space: pre-wrap;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-    -moz-hyphens: auto;
+    overflow-x: hidden;
   }
 
   .imageContainer {
@@ -363,8 +359,10 @@
 @media (max-width: 360px) {
   .content {
     padding: 0.8rem;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     line-height: 1.7;
+    overflow-x: hidden;
+    word-break: keep-all;
   }
 }
 
