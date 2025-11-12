@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import styles from './LanguageModeSelector.module.css';
-import { Language, Mode, Translations } from '@/app/translations';
+import { Language, Mode, Translations } from '@/app/portfolio/translations';
 
 interface LanguageModeSelectorProps {
   onSelect: (language: Language, mode: Mode) => void;
