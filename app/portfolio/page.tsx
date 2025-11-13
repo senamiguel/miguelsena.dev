@@ -350,7 +350,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!language || !mode || mode !== 'advanced' || !currentDir) return;
+    if (!language || !mode || !currentDir) return;
     
     const handleKeyDown = (e: KeyboardEvent) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)) {
