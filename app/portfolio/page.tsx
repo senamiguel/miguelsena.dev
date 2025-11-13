@@ -52,17 +52,17 @@ const ABOUT_ME_CONTENT = [
 
 const CONTACT_CONTENT = [
   '',
-  '    +---------------------------------------+',
-  '    |                                       |',
-  '    |          C O N T A C T   M E          |',
-  '    |                                       |',
-  '    +---------------------------------------+',
-  '    |                                       |',
-  '    |   > LinkedIn: /in/miguelsena          |',
-  '    |   > GitHub:   /besena                 |',
-  '    |   > Email:    contact@miguelsena.site |',
-  '    |                                       |',
-  '    +---------------------------------------+',
+  '    +-------------------------------------------+',
+  '    |                                           |',
+  '    |            C O N T A C T   M E            |',
+  '    |                                           |',
+  '    +-------------------------------------------+',
+  '    |                                           |',
+  '    |   > LinkedIn: /in/miguelsena              |',
+  '    |   > GitHub:   /senamiguel                 |',
+  '    |   > Email:    miguelaugustosena@gmail.com |',
+  '    |                                           |',
+  '    +-------------------------------------------+',
   ''
 ].join('\n');
 
@@ -155,6 +155,9 @@ function getAboutContent(lang: Language): string {
   const centerText = (text: string): string => {
     const clean = text.trim();
     const totalPadding = width - clean.length;
+    if (totalPadding < 0) {
+      return clean.substring(0, width);
+    }
     const left = Math.floor(totalPadding / 2);
     const right = totalPadding - left;
     return ' '.repeat(left) + clean + ' '.repeat(right);
@@ -190,19 +193,35 @@ function getAboutContent(lang: Language): string {
 
 function getContactContent(lang: Language): string {
   const t = translations[lang];
+  const width = 39;
+  
+  const centerText = (text: string): string => {
+    const clean = text.trim();
+    const totalPadding = width - clean.length;
+    if (totalPadding < 0) {
+      return clean.substring(0, width);
+    }
+    const left = Math.floor(totalPadding / 2);
+    const right = totalPadding - left;
+    return ' '.repeat(left) + clean + ' '.repeat(right);
+  };
+
+  const padLine = (text: string = '') =>
+    `    | ${text.padEnd(width, ' ')} |`;
+
   return [
     '',
-    '    +---------------------------------------+',
-    '    |                                       |',
-    `    |          ${t.terminal.contact.title}          |`,
-    '    |                                       |',
-    '    +---------------------------------------+',
-    '    |                                       |',
-    `    |   > LinkedIn: ${t.terminal.contact.linkedin}           |`,
-    `    |   > GitHub:   ${t.terminal.contact.github}                 |`,
-    `    |   > Email:    ${t.terminal.contact.email} |`,
-    '    |                                       |',
-    '    +---------------------------------------+',
+    '    +' + '-'.repeat(width + 2) + '+',
+    padLine(),
+    `    | ${centerText(t.terminal.contact.title)} |`,
+    padLine(),
+    '    +' + '-'.repeat(width + 2) + '+',
+    padLine(),
+    padLine(`> LinkedIn: ${t.terminal.contact.linkedin}`),
+    padLine(`> GitHub:   ${t.terminal.contact.github}`),
+    padLine(`> Email:    ${t.terminal.contact.email}`),
+    padLine(),
+    '    +' + '-'.repeat(width + 2) + '+',
     ''
   ].join('\n');
 }
@@ -302,10 +321,11 @@ export default function Home() {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
-  const [showCursor, setShowCursor] = useState(true);
+  const [showCursor, setShowCursor] = useState(false);
   const [dosText, setDosText] = useState('');
   const [showAboutImage, setShowAboutImage] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const handleLanguageModeSelect = (lang: Language, selectedMode: Mode) => {
     setLanguage(lang);
@@ -340,6 +360,12 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const timerId = setInterval(() => {
       setShowCursor(prev => !prev);
     }, 153);
@@ -347,10 +373,10 @@ export default function Home() {
     return () => {
       clearInterval(timerId);
     };
-  }, []);
+  }, [mounted]);
 
   useEffect(() => {
-    if (!language || !mode || !currentDir) return;
+    if (!language || !mode || !currentDir || !mounted) return;
     
     const handleKeyDown = (e: KeyboardEvent) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)) {
@@ -808,7 +834,7 @@ export default function Home() {
     <main className={styles.main}>
       <CrtScreen imageSrc={showAboutImage ? '/5.jpeg' : undefined}>
         {dosText}
-        {showCursor && "_"}
+        {mounted && showCursor && "_"}
       </CrtScreen>
       {mode === 'beginner' && (
         <div className={styles.mobileButtons}>

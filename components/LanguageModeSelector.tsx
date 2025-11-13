@@ -38,7 +38,7 @@ const LanguageModeSelector = ({ onSelect }: LanguageModeSelectorProps) => {
               </button>
               <button
                 className={styles.option}
-                onClick={() => window.alert("Em construção...")}
+                onClick={() => handleLanguageSelect('pt')}
               >
                 <span className={styles.flag}>🇧🇷</span>
                 <span className={styles.label}>Portugues</span>

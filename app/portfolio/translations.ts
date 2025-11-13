@@ -105,9 +105,9 @@ export const translations: Record<Language, Translations> = {
       },
       contact: {
         title: 'C O N T A C T   M E',
-        linkedin: 'in/senamiguel',
-        github: '/besena',
-        email: 'contact@miguelsena.site',
+        linkedin: '/in/senamiguel',
+        github: '/senamiguel',
+        email: 'miguelaugustosena@gmail.com',
       },
       site: {
         description: 'This is the project file for this very website!',
@@ -188,9 +188,9 @@ export const translations: Record<Language, Translations> = {
       },
       contact: {
         title: 'E N T R E   E M   C O N T A T O',
-        linkedin: '/in/miguelsena',
-        github: '/besena',
-        email: 'contact@miguelsena.site',
+        linkedin: '/in/senamiguel',
+        github: '/senamiguel',
+        email: 'miguelaugustosena@gmail.com',
       },
       site: {
         description: 'Este e o arquivo do projeto deste site!',
