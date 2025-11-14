@@ -72,6 +72,7 @@ export interface Translations {
     goToProjects: string;
     goToSkills: string;
     goBack: string;
+    goHome: string;
   };
 }
 
@@ -111,7 +112,7 @@ export const translations: Record<Language, Translations> = {
       },
       site: {
         description: 'This is the project file for this very website!',
-        name: 'miguelsena.site',
+        name: 'miguelsena.dev',
         type: 'Portfolio Terminal',
         tech: 'React, Next.js, TypeScript',
         desc: 'A recreation of an MS-DOS terminal as a personal portfolio.',
@@ -136,7 +137,7 @@ export const translations: Record<Language, Translations> = {
           'Microsoft(R) MS-DOS(R) Version 6.22',
           '(C)Copyright Microsoft Corp 1981-1994.',
         ],
-        volume: ' Volume in drive C is MIGUELSENA.SITE',
+        volume: ' Volume in drive C is MIGUELSENA.DEV',
         serial: ' Volume Serial Number is 1994-0A0D',
         directory: 'Directory of C:',
         files: 'file(s)',
@@ -157,6 +158,7 @@ export const translations: Record<Language, Translations> = {
       goToProjects: 'Go to Projects',
       goToSkills: 'Go to Skills',
       goBack: 'Go Back',
+      goHome: 'Go to Home',
     },
   },
   pt: {
@@ -194,7 +196,7 @@ export const translations: Record<Language, Translations> = {
       },
       site: {
         description: 'Este e o arquivo do projeto deste site!',
-        name: 'miguelsena.site',
+        name: 'miguelsena.dev',
         type: 'Terminal Portfolio',
         tech: 'React, Next.js, TypeScript',
         desc: 'Uma recriacao de um terminal MS-DOS como portfolio pessoal.',
@@ -219,7 +221,7 @@ export const translations: Record<Language, Translations> = {
           'Microsoft(R) MS-DOS(R) Versao 6.22',
           '(C)Copyright Microsoft Corp 1981-1994.',
         ],
-        volume: ' Volume na unidade C e MIGUELSENA.SITE',
+        volume: ' Volume na unidade C e MIGUELSENA.DEV',
         serial: ' Numero de Serie do Volume e 1994-0A0D',
         directory: 'Diretorio de C:',
         files: 'arquivo(s)',
@@ -240,6 +242,7 @@ export const translations: Record<Language, Translations> = {
       goToProjects: 'Ir para Projetos',
       goToSkills: 'Ir para Habilidades',
       goBack: 'Voltar',
+      goHome: 'Ir para Inicio',
     },
   },
 };
