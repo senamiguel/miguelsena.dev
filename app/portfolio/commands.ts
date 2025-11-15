@@ -370,7 +370,6 @@ registerCommand('cat', (args, ctx) => {
 });
 
 registerCommand('sl', (args, ctx) => {
-  // Return simple message, will be handled specially in page.tsx
   return {
     output: tr(ctx,
       "🚂💨 Choo choo! (Steam Locomotive passed by)\n(This is what happens when you type 'ls' wrong!)",
@@ -402,8 +401,8 @@ registerCommand('ifconfig', (args, ctx) => {
 registerCommand('python', (args, ctx) => {
   return {
     output: tr(ctx,
-      "'python' is not recognized as a DOS command.\nThis is a portfolio, not an IDE! 💻",
-      "'python' nao e reconhecido como um comando do DOS.\nIsto e um portfolio, nao uma IDE! 💻"
+      "'python' is not recognized as a DOS command.\nThis is a portfolio, not an IDE! ",
+      "'python' nao e reconhecido como um comando do DOS.\nIsto e um portfolio, nao uma IDE! "
     )
   };
 });
@@ -411,7 +410,7 @@ registerCommand('python', (args, ctx) => {
 registerCommand('node', (args, ctx) => {
   return {
     output: tr(ctx,
-      "'node' is not recognized as a DOS command.\nThis is a portfolio, not an IDE! 💻",
+      "'node' is not recognized as a DOS command.\nThis is a portfolio, not an IDE!",
       "'node' nao e reconhecido como um comando do DOS.\nIsto e um portfolio, nao uma IDE! 💻"
     )
   };
@@ -427,7 +426,9 @@ registerCommand('java', (args, ctx) => {
 });
 
 registerCommand('git', (args, ctx) => {
-  if (args.trim() === 'status') {
+  const subcommand = args.trim();
+  
+  if (subcommand === 'status') {
     return {
       output: tr(ctx,
         'On branch main\nNothing to commit, living the dream! 🎨',
@@ -435,7 +436,8 @@ registerCommand('git', (args, ctx) => {
       )
     };
   }
-  if (args.trim() === 'push') {
+  
+  if (subcommand === 'push') {
     return {
       output: tr(ctx,
         'Pushing to origin...\nEverything up-to-date! ✅',
@@ -443,10 +445,94 @@ registerCommand('git', (args, ctx) => {
       )
     };
   }
+  
+  if (subcommand === 'pull') {
+    return {
+      output: tr(ctx,
+        'Already up to date. 🔄',
+        'Ja esta atualizado. 🔄'
+      )
+    };
+  }
+  
+  if (subcommand === 'log') {
+    return {
+      output: tr(ctx,
+        'commit a1b2c3d (HEAD -> main)\nAuthor: Miguel Sena\nDate: Nov 14 2025\n\n    feat: added awesome portfolio terminal',
+        'commit a1b2c3d (HEAD -> main)\nAutor: Miguel Sena\nData: 14 Nov 2025\n\n    feat: adicionado terminal incrivel ao portfolio'
+      )
+    };
+  }
+  
+  if (subcommand === 'branch') {
+    return {
+      output: '* main\n  feature/awesome-terminal'
+    };
+  }
+  
+  if (subcommand === 'diff') {
+    return {
+      output: tr(ctx,
+        'No changes detected. All good! ✨',
+        'Nenhuma mudanca detectada. Ta tudo certo! ✨'
+      )
+    };
+  }
+  
+  if (subcommand === '--help' || subcommand === '-h') {
+    return {
+      output: tr(ctx,
+        'Are you serious?',
+        'Ta de zoeira?'
+      )
+    };
+  }
+  
+  if (subcommand === 'commit') {
+    return {
+      output: tr(ctx,
+        'Nothing to commit! Try doing some work first. 💼',
+        'Nada para commitar! Tenta fazer algum trabalho primeiro. 💼'
+      )
+    };
+  }
+  
+  if (subcommand === 'clone') {
+    return {
+      output: tr(ctx,
+        'Cloning into portfolio...\nDone! But it\'s already here. 🤷',
+        'Clonando para portfolio...\nPronto! Mas ja esta aqui. 🤷'
+      )
+    };
+  }
+  
+  if (subcommand === 'init') {
+    return {
+      output: tr(ctx,
+        'Already initialized! This repo is ready to go. 🚀',
+        'Ja inicializado! Este repo esta pronto. 🚀'
+      )
+    };
+  }
+  
+  if (subcommand === '') {
+    return {
+      output: tr(ctx,
+        "usage: git <command>\n\nTry: status, push, pull, log, branch",
+        "uso: git <comando>\n\nTente: status, push, pull, log, branch"
+      )
+    };
+  }
+  
+  return {
+    output: `git: '${subcommand}' is not a git command. See "git --help".`
+  };
 });
 
 registerCommand('npm', (args, ctx) => {
-  if (args.trim() === 'install') {
+  const subcommand = args.trim();
+  
+  if (subcommand === 'install' || subcommand === 'i') {
     return {
       output: '',
       animate: true,
@@ -456,6 +542,87 @@ registerCommand('npm', (args, ctx) => {
       ).split('|')
     };
   }
+  
+  if (subcommand === 'start') {
+    return {
+      output: tr(ctx,
+        'Starting development server...\nServer already running on http://localhost:3000 🚀',
+        'Iniciando servidor de desenvolvimento...\nServidor ja rodando em http://localhost:3000 🚀'
+      )
+    };
+  }
+  
+  if (subcommand === 'run dev') {
+    return {
+      output: tr(ctx,
+        'Starting Next.js dev server...\n✓ Ready on http://localhost:3000',
+        'Iniciando servidor dev Next.js...\n✓ Pronto em http://localhost:3000'
+      )
+    };
+  }
+  
+  if (subcommand === 'run build') {
+    return {
+      output: '',
+      animate: true,
+      lines: tr(ctx,
+        'Building for production...|Compiling...|Optimizing...|✓ Build complete! Ready to deploy. 🎉',
+        'Construindo para producao...|Compilando...|Otimizando...|✓ Build completo! Pronto para deploy. 🎉'
+      ).split('|')
+    };
+  }
+  
+  if (subcommand === 'test') {
+    return {
+      output: tr(ctx,
+        'Running tests...\n✓ All tests passed! (just kidding, no tests here) 🧪',
+        'Executando testes...\n✓ Todos os testes passaram! (brincadeira, nao tem testes aqui) 🧪'
+      )
+    };
+  }
+  
+  if (subcommand === 'version' || subcommand === '-v') {
+    return {
+      output: '10.9.0 (but who\'s counting?) 📦'
+    };
+  }
+  
+  if (subcommand === 'update') {
+    return {
+      output: tr(ctx,
+        'Checking for updates...\nAll packages are up to date! 📦✨',
+        'Verificando atualizacoes...\nTodos os pacotes estao atualizados! 📦✨'
+      )
+    };
+  }
+  
+  if (subcommand === 'audit') {
+    return {
+      output: tr(ctx,
+        'found 0 vulnerabilities\nEverything looks secure! 🔒',
+        'encontradas 0 vulnerabilidades\nTudo parece seguro! 🔒'
+      )
+    };
+  }
+  
+  if (subcommand === 'list' || subcommand === 'ls') {
+    return {
+      output: 'portfolio@1.0.0\n├── react@18.3.0\n├── next@16.0.1\n└── typescript@5.7.0\n\n(and 1334 more packages...)'
+    };
+  }
+  
+  if (subcommand === '') {
+    return {
+      output: tr(ctx,
+        "usage: npm <command>\n\nTry: install, start, test, run build",
+        "uso: npm <comando>\n\nTente: install, start, test, run build"
+      )
+    };
+  }
+  
+  return {
+    output: `npm: unknown command '${subcommand}'. Run 'npm' for usage.`
+  };
 });
 
 registerCommand('make', (args, ctx) => {
@@ -495,7 +662,7 @@ registerCommand('42', (args, ctx) => {
   return {
     output: tr(ctx,
       'The Answer to the Ultimate Question\nof Life, the Universe, and Everything.\n🌌',
-      'A Resposta para a Pergunta Fundamental\nda Vida, do Universo e de Tudo.\n🌌'
+      'A Resposta para a Pergunta Fundamental\nda Vida, do Universo e de Tudo Mais.\n🌌'
     )
   };
 });
@@ -523,7 +690,72 @@ registerCommand('duda', (args, ctx) => {
     animate: true,
     lines: tr(ctx,
       '💖 Honey, you are very special to me!|Thank you for always being by my side.|I love you! - Miguel||For an amazing girlfriend, a unique easter egg just for you!',
-      '💖 Meu bem, voce e muito especial para mim!|Obrigado por estar sempre ao meu lado.|Te amo! - Miguel||Para uma namorada incrivel, um easter egg sos seu!'
+      '💖 Meu bem, voce e muito especial para mim!|Obrigado por estar sempre ao meu lado.|Te amo! - Miguel||Para uma namorada incrivel, um easter egg so seu!'
     ).split('|')
   };
+});
+
+registerCommand('yarn', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "yarn? We're an npm shop here! Try 'npm' instead. 🧶",
+      "yarn? Aqui usamos npm! Tenta 'npm'. 🧶"
+    )
+  };
+});
+
+registerCommand('pnpm', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "pnpm? Fancy! But we use npm here. 📦",
+      "pnpm? Chique! Mas aqui usamos npm. 📦"
+    )
+  };
+});
+
+registerCommand('docker', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "Docker? In MS-DOS?\nNice try, but containers don't exist yet! 🐋",
+      "Docker? No MS-DOS?\nBoa tentativa, mas containers ainda nao existem! 🐋"
+    )
+  };
+});
+
+registerCommand('code', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "Opening VS Code...\nJust kidding! We're already in the best IDE. 💻✨",
+      "Abrindo VS Code...\nBrincadeira! Ja estamos na melhor IDE. 💻✨"
+    )
+  };
+});
+
+registerCommand('neofetch', (args, ctx) => {
+  const art = `
+        ____  ____  ____
+       / __ \\/ __ \\/ __/
+      / / / / / / /\\ \\  
+     /_/ /_/_/ /_/___/  
+  `;
+  
+  return {
+    output: art + tr(ctx,
+      '\n\nOS: MS-DOS 6.22\nHost: PORTFOLIO.TERMINAL\nKernel: Miguel.Brain.v1.0\nUptime: ∞ hours\nPackages: Too many easter eggs\nShell: Custom DOS Shell\nTerminal: CRT Screen\nCPU: Coffee-Powered\nMemory: Unlimited imagination',
+      '\n\nSO: MS-DOS 6.22\nHost: PORTFOLIO.TERMINAL\nKernel: Miguel.Cerebro.v1.0\nUptime: ∞ horas\nPacotes: Muitos easter eggs\nShell: Custom DOS Shell\nTerminal: Tela CRT\nCPU: Movido a Cafe\nMemoria: Imaginacao ilimitada'
+    )
+  };
+});
+
+registerCommand('htop', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "CPU: [████████░░] 80% (mostly processing easter eggs)\nRAM: [██████░░░░] 60% (storing memories)\nSWAP: [░░░░░░░░░░] 0% (we don't need it)\n\nProcesses:\n 1. awesome.exe - Running\n 2. creativity.exe - Running\n 3. coffee.exe - Consuming",
+      "CPU: [████████░░] 80% (processando easter eggs)\nRAM: [██████░░░░] 60% (guardando memorias)\nSWAP: [░░░░░░░░░░] 0% (nao precisamos)\n\nProcessos:\n 1. awesome.exe - Rodando\n 2. creativity.exe - Rodando\n 3. coffee.exe - Consumindo"
+    )
+  };
+});
+
+registerCommand('top', (args, ctx) => {
+  return commands['htop'](args, ctx);
 });
