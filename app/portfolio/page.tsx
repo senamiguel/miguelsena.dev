@@ -4,7 +4,7 @@ import LanguageModeSelector from '@/components/LanguageModeSelector';
 import styles from './page.module.css';
 import { useState, useEffect, useRef } from 'react';
 import { Language, Mode, translations } from './translations';
-import { executeCommand, Directory, FileSystemNode } from './commands';
+import { executeCommand, Directory, FileSystemNode, getCommandNames } from './commands';
 
 function addParentLinks(dir: Directory, parent: Directory | null) {
   dir.parent = parent ? parent : undefined;
@@ -172,6 +172,18 @@ export default function Home() {
 
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  // Autocomplete state
+  const [autoSuggestions, setAutoSuggestions] = useState<string[]>([]);
+  const [autoCycleIndex, setAutoCycleIndex] = useState(0);
+  const [basePrefix, setBasePrefix] = useState<string>('');
+  const [suggestionMode, setSuggestionMode] = useState<'command'|'arg'|null>(null);
+  // Static subcommand sets for git & npm (first token after command)
+  const gitSubs = [
+    'status','log','commit','push','pull','branch','checkout','merge','stash','revert','reset','diff','tag','init','clone','add'
+  ];
+  const npmSubs = [
+    'install','i','ci','run','start','build','test','publish','outdated','update','audit','cache','prune','init'
+  ];
 
   const [showCursor, setShowCursor] = useState(false);
   const [dosText, setDosText] = useState('');
@@ -346,55 +358,138 @@ export default function Home() {
         const commandText = currentLine.substring(currentPrompt.length);
         const finalCommand = commandText.trim();
 
+        // Reset autocomplete state
+        setAutoSuggestions([]);
+        setAutoCycleIndex(0);
+        setBasePrefix('');
+        setSuggestionMode(null);
+
         if (finalCommand && !commandHistory.includes(finalCommand)) {
           setCommandHistory(prev => [...prev, finalCommand]);
         }
         setHistoryIndex(-1);
-
         processCommand(finalCommand);
-      } else if (e.key === "Backspace") {
-        setDosText((prev: string) => {
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        setDosText(prev => {
+          const lastLineIndex = prev.lastIndexOf('\n');
+            const currentLine = prev.substring(lastLineIndex + 1);
+            if (currentLine.length > currentPrompt.length) return prev.slice(0, -1);
+            return prev;
+        });
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const lastLineIndex = dosText.lastIndexOf('\n');
+        const currentLine = dosText.substring(lastLineIndex + 1);
+        const inputPortion = currentLine.substring(currentPrompt.length);
+        const firstSpace = inputPortion.indexOf(' ');
+
+        // COMMAND NAME MODE
+        if (firstSpace === -1) {
+          const typed = inputPortion.trim();
+          if (suggestionMode === 'command' && autoSuggestions.length > 0) {
+            // Cycle existing list
+            const nextIndex = (autoCycleIndex + 1) % autoSuggestions.length;
+            setAutoCycleIndex(nextIndex);
+            const chosen = autoSuggestions[nextIndex];
+            setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + chosen);
+            return;
+          }
+          const pool = typed === '' ? getCommandNames().sort() : getCommandNames().filter(c => c.startsWith(typed.toLowerCase())).sort();
+          if (pool.length === 0) {
+            setAutoSuggestions([]);
+            setSuggestionMode(null);
+            setBasePrefix('');
+            setAutoCycleIndex(0);
+            return;
+          }
+          setAutoSuggestions(pool);
+          setSuggestionMode('command');
+          setBasePrefix(typed);
+          setAutoCycleIndex(0);
+          setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + pool[0]);
+          return;
+        }
+
+        // ARG MODE
+        const commandPart = inputPortion.substring(0, firstSpace).trim().toLowerCase();
+        const afterCmd = inputPortion.substring(firstSpace + 1);
+        const argTokenEnd = afterCmd.indexOf(' ');
+        const argPrefixRaw = (argTokenEnd === -1 ? afterCmd : afterCmd.substring(0, argTokenEnd));
+        const argPrefix = argPrefixRaw.trim();
+        if (argTokenEnd !== -1 && commandPart !== 'git' && commandPart !== 'npm') return; // don't complete deeper args (except git/npm)
+
+        let pool: string[] = [];
+        if (commandPart === 'cd' && currentDir) {
+          pool = Object.entries(currentDir.children).filter(([, e2]) => e2.type === 'dir').map(([n]) => n);
+          pool.unshift('..');
+        } else if (commandPart === 'start' && currentDir) {
+          pool = Object.entries(currentDir.children).filter(([, e2]) => e2.type === 'file').map(([n]) => n);
+        } else if (commandPart === 'git') {
+          pool = gitSubs;
+        } else if (commandPart === 'npm') {
+          pool = npmSubs;
+        } else {
+          return;
+        }
+
+        if (suggestionMode === 'arg' && autoSuggestions.length > 0 && basePrefix === commandPart + ' ' + argPrefix) {
+          const nextIndex = (autoCycleIndex + 1) % autoSuggestions.length;
+          setAutoCycleIndex(nextIndex);
+          const chosenArg = autoSuggestions[nextIndex];
+          const remainder = argTokenEnd === -1 ? '' : afterCmd.substring(argTokenEnd);
+          setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + commandPart + ' ' + chosenArg + remainder);
+          return;
+        }
+
+        const filtered = argPrefix === '' ? pool.sort() : pool.filter(p => p.startsWith(argPrefix.toLowerCase())).sort();
+        if (!filtered.length) {
+          setAutoSuggestions([]);
+          setSuggestionMode(null);
+          setBasePrefix('');
+          setAutoCycleIndex(0);
+          return;
+        }
+        setAutoSuggestions(filtered);
+        setSuggestionMode('arg');
+        setBasePrefix(commandPart + ' ' + argPrefix);
+        setAutoCycleIndex(0);
+        const chosenArg = filtered[0];
+        const remainder = argTokenEnd === -1 ? '' : afterCmd.substring(argTokenEnd);
+        setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + commandPart + ' ' + chosenArg + remainder);
+        return;
+      }
+
+      if (e.key === "ArrowLeft") {
+        setDosText(prev => {
           const lastLineIndex = prev.lastIndexOf('\n');
           const currentLine = prev.substring(lastLineIndex + 1);
-
-          if (currentLine.length > currentPrompt.length) {
-            return prev.slice(0, -1);
-          } else {
-            return prev;
-          }
+          if (currentLine.length > currentPrompt.length) return prev.slice(0, -1);
+          return prev;
         });
-      } else if (e.key === "Tab") {
-        e.preventDefault();
-        setDosText((prev: string) => prev + "    ");
-      } else if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        setDosText((prev: string) => {
-          const lastLineIndex = prev.lastIndexOf('\n');
-          const currentLine = prev.substring(lastLineIndex + 1);
+        return;
+      }
 
-          if (currentLine.length > currentPrompt.length) {
-            return prev.slice(0, -1);
-          } else {
-            return prev;
-          }
-        });
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
+      if (e.key === "ArrowUp") {
         if (commandHistory.length > 0) {
           const newIndex = historyIndex < commandHistory.length - 1 ? historyIndex + 1 : historyIndex;
           setHistoryIndex(newIndex);
-
           setDosText(prev => {
             const lastLineIndex = prev.lastIndexOf('\n');
             return prev.substring(0, lastLineIndex + 1) + currentPrompt + commandHistory[commandHistory.length - 1 - newIndex];
           });
         }
-      } else if (e.key === "ArrowDown") {
-        e.preventDefault();
+        return;
+      }
+
+      if (e.key === "ArrowDown") {
         if (historyIndex > 0) {
           const newIndex = historyIndex - 1;
           setHistoryIndex(newIndex);
-
           setDosText(prev => {
             const lastLineIndex = prev.lastIndexOf('\n');
             return prev.substring(0, lastLineIndex + 1) + currentPrompt + commandHistory[commandHistory.length - 1 - newIndex];
@@ -406,34 +501,38 @@ export default function Home() {
             return prev.substring(0, lastLineIndex + 1) + currentPrompt;
           });
         }
-      } else if (e.key.length > 1) {
+        return;
+      }
+
+      if (e.key.length > 1) {
         if (e.key === "ArrowRight" || e.key === "Escape") {
-          e.preventDefault();
+          return; // ignored
         }
       } else {
-        setDosText((prev: string) => prev + e.key);
+        // normal character
+        if (autoSuggestions.length) {
+          setAutoSuggestions([]);
+          setAutoCycleIndex(0);
+          setBasePrefix('');
+          setSuggestionMode(null);
+        }
+        setDosText(prev => prev + e.key);
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [dosText, currentDir, commandHistory, historyIndex, language, mode, t, currentPrompt]);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [dosText, currentDir, commandHistory, historyIndex, language, mode, mounted, currentPrompt, autoSuggestions, autoCycleIndex, basePrefix, suggestionMode]);
 
   const typeCommand = (command: string) => {
     if (isTyping || !currentDir || !language) return;
-
     setIsTyping(true);
     const prompt = `C:${currentDir.path}>`;
-
     setDosText(prev => {
       const lastLineIdx = prev.lastIndexOf('\n');
       const base = prev.substring(0, lastLineIdx + 1);
       return base + prompt;
     });
-
     const totalDelay = command.length * 50;
     command.split('').forEach((char, index) => {
       setTimeout(() => {
@@ -444,15 +543,12 @@ export default function Home() {
         });
       }, index * 50);
     });
-
     setTimeout(() => {
       const finalCommand = command.trim();
-
       if (finalCommand && !commandHistory.includes(finalCommand)) {
         setCommandHistory(prev => [...prev, finalCommand]);
       }
       setHistoryIndex(-1);
-
       processCommand(finalCommand);
       setIsTyping(false);
     }, totalDelay + 200);
@@ -460,50 +556,41 @@ export default function Home() {
 
   const getAvailableCommands = () => {
     if (!language || !currentDir) return [];
-
+    const tLocal = translations[language];
     const baseCommands = mode === 'beginner' ? [
-      { label: t.buttons.help, command: 'help' },
-      { label: t.buttons.listFiles, command: 'dir' },
-      { label: t.buttons.clear, command: 'cls' },
-      { label: t.buttons.restart, command: 'restart' },
+      { label: tLocal.buttons.help, command: 'help' },
+      { label: tLocal.buttons.listFiles, command: 'dir' },
+      { label: tLocal.buttons.clear, command: 'cls' },
+      { label: tLocal.buttons.restart, command: 'restart' },
     ] : [
       { label: 'help', command: 'help' },
       { label: 'dir', command: 'dir' },
       { label: 'cls', command: 'cls' },
       { label: 'restart', command: 'restart' },
     ];
-
     const dirCommands: Array<{ label: string; command: string }> = [];
     const fileCommands: Array<{ label: string; command: string }> = [];
-
     if (currentDir.parent) {
-      dirCommands.push({
-        label: mode === 'beginner' ? t.buttons.goBack : 'cd ..',
-        command: 'cd ..'
-      });
+      dirCommands.push({ label: mode === 'beginner' ? tLocal.buttons.goBack : 'cd ..', command: 'cd ..' });
     }
-
     if (currentDir.children) {
       Object.entries(currentDir.children).forEach(([name, entry]) => {
         if (entry.type === 'dir') {
           const label = mode === 'beginner'
-            ? (name === 'projects' ? t.buttons.goToProjects : name === 'skills' ? t.buttons.goToSkills : `cd ${name}`)
+            ? (name === 'projects' ? tLocal.buttons.goToProjects : name === 'skills' ? tLocal.buttons.goToSkills : `cd ${name}`)
             : `cd ${name}`;
           dirCommands.push({ label, command: `cd ${name}` });
         } else {
           const label = mode === 'beginner'
-            ? (name === 'about' ? t.buttons.viewAbout : name === 'contact' ? t.buttons.viewContact : name === 'site.txt' ? t.buttons.viewProject : `start ${name}`)
+            ? (name === 'about' ? tLocal.buttons.viewAbout : name === 'contact' ? tLocal.buttons.viewContact : name === 'site.txt' ? tLocal.buttons.viewProject : `start ${name}`)
             : `start ${name}`;
           fileCommands.push({ label, command: `start ${name}` });
         }
       });
     }
-
     return [...baseCommands, ...dirCommands, ...fileCommands];
   };
-
   const availableCommands = getAvailableCommands();
-
   if (!language || !mode) {
     return (
       <main className={styles.main}>
@@ -517,6 +604,9 @@ export default function Home() {
       <CrtScreen imageSrc={showAboutImage ? '/5.jpeg' : undefined}>
         {dosText}
         {mounted && showCursor && "_"}
+        {autoSuggestions.length > 1 && (
+          '\n' + '[ ' + autoSuggestions.join('  ') + ' ]'
+        )}
       </CrtScreen>
       <div className={styles.headerButtons}>
         <button

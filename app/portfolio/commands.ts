@@ -49,9 +49,11 @@ export function executeCommand(
   commandLine: string,
   ctx: CommandContext
 ): CommandResult {
-  const parts = commandLine.trim().toLowerCase().split(' ');
-  const command = parts[0];
-  const args = parts.slice(1).join(' ');
+  const trimmed = commandLine.trim();
+  if (trimmed === '') return { output: '' };
+  const firstSpace = trimmed.indexOf(' ');
+  const command = (firstSpace === -1 ? trimmed : trimmed.slice(0, firstSpace)).toLowerCase();
+  const args = firstSpace === -1 ? '' : trimmed.slice(firstSpace + 1); // preserve original casing & spacing of args
 
   const handler = commands[command];
   if (handler) {
@@ -60,6 +62,11 @@ export function executeCommand(
   }
 
   return { output: `Illegal command: ${commandLine}` };
+}
+
+// Return a snapshot of registered command names (lowercase)
+export function getCommandNames(): string[] {
+  return Object.keys(commands);
 }
 
 // Helper to get translation
@@ -356,11 +363,9 @@ registerCommand('time', (args, ctx) => {
 });
 
 registerCommand('echo', (args, ctx) => {
-  if (args.trim() === '' || args.trim() === 'hello') {
-    return {
-      output: tr(ctx, "Hello! 👋 Echo... echo... echo...", "Ola! 👋 Eco... eco... eco...")
-    };
-  }
+  // DOS style: echo with no args prints a blank line. Otherwise just output the raw args.
+  if (args === '') return { output: '' };
+  return { output: args };
 });
 
 registerCommand('cat', (args, ctx) => {
@@ -399,363 +404,551 @@ registerCommand('ifconfig', (args, ctx) => {
 });
 
 registerCommand('python', (args, ctx) => {
+  if (args.trim() === '') {
+    return {
+      output: `    ____        __  __                 
+   / __ \\__  __/ /_/ /_  ____  ____   
+  / /_/ / / / / __/ __ \\/ __ \\/ __ \\  
+ / ____/ /_/ / /_/ / / / /_/ / / / /  
+/_/    \\__, /\\__/_/ /_/\\____/_/ /_/   
+      /____/                          
+
+${tr(ctx,
+  "Python 3.13.0 (MS-DOS port)\nType 'help' for more information.\n>>> import this\nThe Zen of Python:\n- Simple is better than complex.\n- Now is better than never.\n- But you can't actually run Python here! 🐍",
+  "Python 3.13.0 (versao MS-DOS)\nDigite 'help' para mais informacoes.\n>>> import this\nO Zen do Python:\n- Simples e melhor que complexo.\n- Agora e melhor que nunca.\n- Mas voce nao pode rodar Python aqui! 🐍"
+)}`
+    };
+  }
+  
   return {
     output: tr(ctx,
-      "'python' is not recognized as a DOS command.\nThis is a portfolio, not an IDE! ",
-      "'python' nao e reconhecido como um comando do DOS.\nIsto e um portfolio, nao uma IDE! "
+      `>>> ${args}\nSyntaxError: This is a portfolio, not a Python interpreter! 🐍`,
+      `>>> ${args}\nSyntaxError: Isto e um portfolio, nao um interpretador Python! 🐍`
     )
   };
 });
 
 registerCommand('node', (args, ctx) => {
+  if (args.trim() === '' || args.trim() === '--version' || args.trim() === '-v') {
+    return {
+      output: `
+   _   _           _        _     
+  | \\ | | ___   __| | ___  (_)___ 
+  |  \\| |/ _ \\ / _\` |/ _ \\ | / __|
+  | |\\  | (_) | (_| |  __/_| \\__ \\
+  |_| \\_|\\___/ \\__,_|\\___(_) |___/
+                          |__/    
+
+${tr(ctx,
+  "Node.js v22.11.0\nWelcome to Node.js REPL.\n> console.log('Hello from the terminal!')\nHello from the terminal!\n> process.exit()\nJust kidding! This isn't real Node.js 😄",
+  "Node.js v22.11.0\nBem-vindo ao Node.js REPL.\n> console.log('Ola do terminal!')\nOla do terminal!\n> process.exit()\nBrincadeira! Isso nao e Node.js de verdade 😄"
+)}`
+    };
+  }
+  
+  if (args.includes('.js')) {
+    return {
+      output: tr(ctx,
+        `node: attempting to run '${args}'\nError: File system is read-only in this dimension! 📁🔒`,
+        `node: tentando executar '${args}'\nErro: Sistema de arquivos e somente leitura nesta dimensao! 📁🔒`
+      )
+    };
+  }
+  
   return {
     output: tr(ctx,
-      "'node' is not recognized as a DOS command.\nThis is a portfolio, not an IDE!",
-      "'node' nao e reconhecido como um comando do DOS.\nIsto e um portfolio, nao uma IDE! 💻"
+      `> ${args}\nReferenceError: This is a portfolio terminal, not a JS runtime! 💚`,
+      `> ${args}\nReferenceError: Este e um terminal de portfolio, nao um runtime JS! 💚`
     )
   };
 });
 
 registerCommand('java', (args, ctx) => {
+  if (args.trim() === '' || args.trim() === '-version' || args.trim() === '--version') {
+    return {
+      output: `
+     _                  
+    | | __ ___   ____ _ 
+ _  | |/ _\` \\ \\ / / _\` |
+| |_| | (_| |\\ V / (_| |
+ \\___/ \\__,_| \\_/ \\__,_|
+
+${tr(ctx,
+  "java version \"21.0.1\" 2023-10-17 LTS\nJava(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29)\n\nBut this is MS-DOS, so no JVM for you! ☕❌",
+  "java version \"21.0.1\" 2023-10-17 LTS\nJava(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29)\n\nMas isso e MS-DOS, entao sem JVM pra voce! ☕❌"
+)}`
+    };
+  }
+  
+  if (args.includes('.java') || args.includes('.class')) {
+    return {
+      output: tr(ctx,
+        `javac: compiling ${args}\nError: OutOfMemoryError: MS-DOS ran out of conventional memory!\n(640K ought to be enough for anybody) 💾`,
+        `javac: compilando ${args}\nErro: OutOfMemoryError: MS-DOS ficou sem memoria convencional!\n(640K deveria ser suficiente para qualquer um) 💾`
+      )
+    };
+  }
+  
   return {
     output: tr(ctx,
-      "'java' is not recognized as a DOS command.\nThis is a portfolio, not an IDE! 💻",
-      "'java' nao e reconhecido como um comando do DOS.\nIsto e um portfolio, nao uma IDE! 💻"
+      `Exception in thread "main":\nPortfolioException: Cannot run Java in a DOS terminal!\n  at miguel.portfolio.Terminal.main(Terminal.java:1994) ☕`,
+      `Exception in thread "main":\nPortfolioException: Nao pode rodar Java num terminal DOS!\n  at miguel.portfolio.Terminal.main(Terminal.java:1994) ☕`
     )
   };
 });
 
-registerCommand('git', (args, ctx) => {
-  const subcommand = args.trim();
-  
-  if (subcommand === 'status') {
-    return {
-      output: tr(ctx,
-        'On branch main\nNothing to commit, living the dream! 🎨',
-        'Na branch main\nNada para commitar, vivendo o sonho! 🎨'
-      )
-    };
-  }
-  
-  if (subcommand === 'push') {
-    return {
-      output: tr(ctx,
-        'Pushing to origin...\nEverything up-to-date! ✅',
-        'Enviando para origin...\nTudo atualizado! ✅'
-      )
-    };
-  }
-  
-  if (subcommand === 'pull') {
-    return {
-      output: tr(ctx,
-        'Already up to date. 🔄',
-        'Ja esta atualizado. 🔄'
-      )
-    };
-  }
-  
-  if (subcommand === 'log') {
-    return {
-      output: tr(ctx,
-        'commit a1b2c3d (HEAD -> main)\nAuthor: Miguel Sena\nDate: Nov 14 2025\n\n    feat: added awesome portfolio terminal',
-        'commit a1b2c3d (HEAD -> main)\nAutor: Miguel Sena\nData: 14 Nov 2025\n\n    feat: adicionado terminal incrivel ao portfolio'
-      )
-    };
-  }
-  
-  if (subcommand === 'branch') {
-    return {
-      output: '* main\n  feature/awesome-terminal'
-    };
-  }
-  
-  if (subcommand === 'diff') {
-    return {
-      output: tr(ctx,
-        'No changes detected. All good! ✨',
-        'Nenhuma mudanca detectada. Ta tudo certo! ✨'
-      )
-    };
-  }
-  
-  if (subcommand === '--help' || subcommand === '-h') {
-    return {
-      output: tr(ctx,
-        'Are you serious?',
-        'Ta de zoeira?'
-      )
-    };
-  }
-  
-  if (subcommand === 'commit') {
-    return {
-      output: tr(ctx,
-        'Nothing to commit! Try doing some work first. 💼',
-        'Nada para commitar! Tenta fazer algum trabalho primeiro. 💼'
-      )
-    };
-  }
-  
-  if (subcommand === 'clone') {
-    return {
-      output: tr(ctx,
-        'Cloning into portfolio...\nDone! But it\'s already here. 🤷',
-        'Clonando para portfolio...\nPronto! Mas ja esta aqui. 🤷'
-      )
-    };
-  }
-  
-  if (subcommand === 'init') {
-    return {
-      output: tr(ctx,
-        'Already initialized! This repo is ready to go. 🚀',
-        'Ja inicializado! Este repo esta pronto. 🚀'
-      )
-    };
-  }
-  
-  if (subcommand === '') {
-    return {
-      output: tr(ctx,
-        "usage: git <command>\n\nTry: status, push, pull, log, branch",
-        "uso: git <comando>\n\nTente: status, push, pull, log, branch"
-      )
-    };
-  }
-  
-  return {
-    output: `git: '${subcommand}' is not a git command. See "git --help".`
-  };
-});
+// ============================================================================
+// EASTER EGGS
+// ============================================================================
 
-registerCommand('npm', (args, ctx) => {
-  const subcommand = args.trim();
-  
-  if (subcommand === 'install' || subcommand === 'i') {
+registerCommand('rm', (args, ctx) => {
+  const trimmed = args.trim();
+  if (trimmed === '-rf' || trimmed === '-rf /' || trimmed === '-rf *') {
     return {
       output: '',
       animate: true,
       lines: tr(ctx,
-        'installing dependencies...|fetching packages...|building...|added 1337 packages in 0.420s 📦',
-        'Instalando dependencias...|Baixando pacotes...|Compilando...|Adicionados 1337 pacotes em 0.420s 📦'
+        'Deleting all files...|Just kidding! Nice try though. 😄|Your files are safe... for now.',
+        'Deletando todos os arquivos...|Brincadeira! Boa tentativa 😄|Seus arquivos estao seguros... por enquanto.'
       ).split('|')
     };
   }
-  
-  if (subcommand === 'start') {
-    return {
-      output: tr(ctx,
-        'Starting development server...\nServer already running on http://localhost:3000 🚀',
-        'Iniciando servidor de desenvolvimento...\nServidor ja rodando em http://localhost:3000 🚀'
-      )
-    };
-  }
-  
-  if (subcommand === 'run dev') {
-    return {
-      output: tr(ctx,
-        'Starting Next.js dev server...\n✓ Ready on http://localhost:3000',
-        'Iniciando servidor dev Next.js...\n✓ Pronto em http://localhost:3000'
-      )
-    };
-  }
-  
-  if (subcommand === 'run build') {
-    return {
-      output: '',
-      animate: true,
-      lines: tr(ctx,
-        'Building for production...|Compiling...|Optimizing...|✓ Build complete! Ready to deploy. 🎉',
-        'Construindo para producao...|Compilando...|Otimizando...|✓ Build completo! Pronto para deploy. 🎉'
-      ).split('|')
-    };
-  }
-  
-  if (subcommand === 'test') {
-    return {
-      output: tr(ctx,
-        'Running tests...\n✓ All tests passed! (just kidding, no tests here) 🧪',
-        'Executando testes...\n✓ Todos os testes passaram! (brincadeira, nao tem testes aqui) 🧪'
-      )
-    };
-  }
-  
-  if (subcommand === 'version' || subcommand === '-v') {
-    return {
-      output: '10.9.0 (but who\'s counting?) 📦'
-    };
-  }
-  
-  if (subcommand === 'update') {
-    return {
-      output: tr(ctx,
-        'Checking for updates...\nAll packages are up to date! 📦✨',
-        'Verificando atualizacoes...\nTodos os pacotes estao atualizados! 📦✨'
-      )
-    };
-  }
-  
-  if (subcommand === 'audit') {
-    return {
-      output: tr(ctx,
-        'found 0 vulnerabilities\nEverything looks secure! 🔒',
-        'encontradas 0 vulnerabilidades\nTudo parece seguro! 🔒'
-      )
-    };
-  }
-  
-  if (subcommand === 'list' || subcommand === 'ls') {
-    return {
-      output: 'portfolio@1.0.0\n├── react@18.3.0\n├── next@16.0.1\n└── typescript@5.7.0\n\n(and 1334 more packages...)'
-    };
-  }
-  
-  if (subcommand === '') {
-    return {
-      output: tr(ctx,
-        "usage: npm <command>\n\nTry: install, start, test, run build",
-        "uso: npm <comando>\n\nTente: install, start, test, run build"
-      )
-    };
-  }
-  
-  return {
-    output: `npm: unknown command '${subcommand}'. Run 'npm' for usage.`
-  };
 });
 
-registerCommand('make', (args, ctx) => {
-  if (args.trim() === 'me a sandwich') {
-    return {
-      output: tr(ctx, 'What? Make it yourself! 🥪', 'O que? Faca voce mesmo! 🥪')
-    };
-  }
-});
-
-registerCommand('hello', (args, ctx) => {
-  return {
-    output: tr(ctx,
-      'Hello there! 👋\nThanks for visiting my portfolio!',
-      'Ola! 👋\nObrigado por visitar meu portfolio!'
-    )
-  };
-});
-
-registerCommand('hi', (args, ctx) => {
-  return commands['hello'](args, ctx);
-});
-
-registerCommand('coffee', (args, ctx) => {
-  return {
-    output: `    ( (\n     ) )\n  .______.\n  |      |]\n  \\      /\n   \`----'\n\n${tr(ctx, "Here's your coffee! ☕", "Aqui esta seu coffee! ☕")}`
-  };
-});
-
-registerCommand('tea', (args, ctx) => {
-  return {
-    output: `    ( (\n     ) )\n  .______.\n  |      |]\n  \\      /\n   \`----'\n\n${tr(ctx, "Here's your tea! ☕", "Aqui esta seu tea! ☕")}`
-  };
-});
-
-registerCommand('42', (args, ctx) => {
-  return {
-    output: tr(ctx,
-      'The Answer to the Ultimate Question\nof Life, the Universe, and Everything.\n🌌',
-      'A Resposta para a Pergunta Fundamental\nda Vida, do Universo e de Tudo Mais.\n🌌'
-    )
-  };
-});
-
-registerCommand('vim', (args, ctx) => {
-  return {
-    output: tr(ctx,
-      "Text editors? In MY DOS terminal?\nWe don't do that here. ✍️❌",
-      "Editores de texto? No MEU terminal DOS?\nAqui nao fazemos isso. ✍️❌"
-    )
-  };
-});
-
-registerCommand('nano', (args, ctx) => {
-  return commands['vim'](args, ctx);
-});
-
-registerCommand('emacs', (args, ctx) => {
-  return commands['vim'](args, ctx);
-});
-
-registerCommand('duda', (args, ctx) => {
+registerCommand('hack', (args, ctx) => {
   return {
     output: '',
     animate: true,
     lines: tr(ctx,
-      '💖 Honey, you are very special to me!|Thank you for always being by my side.|I love you! - Miguel||For an amazing girlfriend, a unique easter egg just for you!',
-      '💖 Meu bem, voce e muito especial para mim!|Obrigado por estar sempre ao meu lado.|Te amo! - Miguel||Para uma namorada incrivel, um easter egg so seu!'
+      'Initiating hack sequence...|[████████████] 100%|Access denied. You\'re not Mr. Robot. 🤖',
+      'Iniciando sequencia de invasao...|[████████████] 100%|Acesso negado. Voce nao e o Mr. Robot. 🤖'
     ).split('|')
   };
 });
 
-registerCommand('yarn', (args, ctx) => {
+registerCommand('matrix', (args, ctx) => {
+  return {
+    output: '',
+    animate: true,
+    lines: tr(ctx,
+      'Wake up, Neo...|The Matrix has you...|Follow the white rabbit. 🐰',
+      'Acorde, Neo...|A Matrix pegou voce...|Siga o coelho branco. 🐰'
+    ).split('|')
+  };
+});
+
+registerCommand('ping', (args, ctx) => {
+  return {
+    output: '',
+    animate: true,
+    lines: tr(ctx,
+      'Pinging google.com [142.250.185.78]|Request timed out.|Just kidding, no internet for you! 📶❌',
+      'Pingando google.com [142.250.185.78]|Tempo esgotado para a solicitacao.|Brincadeira, sem internet pra voce! 📶❌'
+    ).split('|')
+  };
+});
+
+registerCommand('format', (args, ctx) => {
+  if (args.trim() === 'c:') {
+    return {
+      output: '',
+      animate: true,
+      lines: tr(ctx,
+        'Formatting C: drive...|Progress: [▓▓▓▓▓▓▓▓▓▓] 99%|ERROR: Just kidding! 😅',
+        'Formatando unidade C: ...|Progresso: [▓▓▓▓▓▓▓▓▓▓] 99%|ERRO: zoeira! 😅'
+      ).split('|')
+    };
+  }
+});
+
+registerCommand('tree', (args, ctx) => {
+  return {
+    output: `🌳\n${tr(ctx, "There's your tree!", "Ta ai sua arvore!")}`
+  };
+});
+
+registerCommand('whoami', (args, ctx) => {
   return {
     output: tr(ctx,
-      "yarn? We're an npm shop here! Try 'npm' instead. 🧶",
-      "yarn? Aqui usamos npm! Tenta 'npm'. 🧶"
+      "You are a curious visitor.\nWelcome to my portfolio! 👋",
+      "Voce e um visitante curioso.\nBem-vindo ao meu portfolio! 👋"
     )
   };
 });
 
-registerCommand('pnpm', (args, ctx) => {
+registerCommand('date', (args, ctx) => {
   return {
     output: tr(ctx,
-      "pnpm? Fancy! But we use npm here. 📦",
-      "pnpm? Chique! Mas aqui usamos npm. 📦"
+      "Current date is: 11-13-2025\n(Time is an illusion in DOS) ⏰",
+      "Data atual: 13-11-2025\n(O tempo e uma ilusao no DOS) ⏰"
     )
   };
 });
 
-registerCommand('docker', (args, ctx) => {
+registerCommand('time', (args, ctx) => {
+  return {
+    output: tr(ctx, "Current time is: ADVENTURE TIME! 🕐", "Hora atual: HORA DA AVENTURA! 🕐")
+  };
+});
+
+registerCommand('echo', (args, ctx) => {
+  if (args === '') return { output: '' };
+  return { output: args };
+}),
+
+registerCommand('cat', (args, ctx) => {
+  return {
+    output: "     /\\_/\\  \n    ( o.o ) \n     > ^ <\n\nMeow! 🐱"
+  };
+});
+
+registerCommand('sl', (args, ctx) => {
   return {
     output: tr(ctx,
-      "Docker? In MS-DOS?\nNice try, but containers don't exist yet! 🐋",
-      "Docker? No MS-DOS?\nBoa tentativa, mas containers ainda nao existem! 🐋"
+      "🚂💨 Choo choo! (Steam Locomotive passed by)\n(This is what happens when you type 'ls' wrong!)",
+      "🚂💨 Choo choo! (A locomotiva passou!)\n(Isso acontece quando voce digita 'ls' errado!)"
     )
   };
 });
 
-registerCommand('code', (args, ctx) => {
-  return {
-    output: tr(ctx,
-      "Opening VS Code...\nJust kidding! We're already in the best IDE. 💻✨",
-      "Abrindo VS Code...\nBrincadeira! Ja estamos na melhor IDE. 💻✨"
-    )
-  };
-});
-
-registerCommand('neofetch', (args, ctx) => {
-  const art = `
-        ____  ____  ____
-       / __ \\/ __ \\/ __/
-      / / / / / / /\\ \\  
-     /_/ /_/_/ /_/___/  
-  `;
+registerCommand('cowsay', (args, ctx) => {
+  const message = args.trim() || 'Hello!';
+  const msgLength = message.length;
+  const border = "_".repeat(msgLength + 2);
   
   return {
-    output: art + tr(ctx,
-      '\n\nOS: MS-DOS 6.22\nHost: PORTFOLIO.TERMINAL\nKernel: Miguel.Brain.v1.0\nUptime: ∞ hours\nPackages: Too many easter eggs\nShell: Custom DOS Shell\nTerminal: CRT Screen\nCPU: Coffee-Powered\nMemory: Unlimited imagination',
-      '\n\nSO: MS-DOS 6.22\nHost: PORTFOLIO.TERMINAL\nKernel: Miguel.Cerebro.v1.0\nUptime: ∞ horas\nPacotes: Muitos easter eggs\nShell: Custom DOS Shell\nTerminal: Tela CRT\nCPU: Movido a Cafe\nMemoria: Imaginacao ilimitada'
-    )
+    output: ` ${border}\n< ${message} >\n ${border.replace(/_/g, "-")}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`
   };
 });
 
-registerCommand('htop', (args, ctx) => {
+registerCommand('ipconfig', (args, ctx) => {
+  return {
+    output: `IP Address: 127.0.0.1\n${tr(ctx, "No place like home! 🏠", "Nada como o lar! 🏠")}`
+  };
+});
+
+registerCommand('ifconfig', (args, ctx) => {
+  return commands['ipconfig'](args, ctx);
+});
+
+registerCommand('python', (args, ctx) => {
+  if (args.trim() === '') {
+    return {
+      output: `    ____        __  __                 
+   / __ \\__  __/ /_/ /_  ____  ____   
+  / /_/ / / / / __/ __ \\/ __ \\/ __ \\  
+ / ____/ /_/ / /_/ / / / /_/ / / / /  
+/_/    \\__, /\\__/_/ /_/\\____/_/ /_/   
+      /____/                          
+
+${tr(ctx,
+  "Python 3.13.0 (MS-DOS port)\nType 'help' for more information.\n>>> import this\nThe Zen of Python:\n- Simple is better than complex.\n- Now is better than never.\n- But you can't actually run Python here! 🐍",
+  "Python 3.13.0 (versao MS-DOS)\nDigite 'help' para mais informacoes.\n>>> import this\nO Zen do Python:\n- Simples e melhor que complexo.\n- Agora e melhor que nunca.\n- Mas voce nao pode rodar Python aqui! 🐍"
+)}`
+    };
+  }
+  
   return {
     output: tr(ctx,
-      "CPU: [████████░░] 80% (mostly processing easter eggs)\nRAM: [██████░░░░] 60% (storing memories)\nSWAP: [░░░░░░░░░░] 0% (we don't need it)\n\nProcesses:\n 1. awesome.exe - Running\n 2. creativity.exe - Running\n 3. coffee.exe - Consuming",
-      "CPU: [████████░░] 80% (processando easter eggs)\nRAM: [██████░░░░] 60% (guardando memorias)\nSWAP: [░░░░░░░░░░] 0% (nao precisamos)\n\nProcessos:\n 1. awesome.exe - Rodando\n 2. creativity.exe - Rodando\n 3. coffee.exe - Consumindo"
+      `>>> ${args}\nSyntaxError: This is a portfolio, not a Python interpreter! 🐍`,
+      `>>> ${args}\nSyntaxError: Isto e um portfolio, nao um interpretador Python! 🐍`
     )
   };
 });
 
-registerCommand('top', (args, ctx) => {
-  return commands['htop'](args, ctx);
+registerCommand('node', (args, ctx) => {
+  if (args.trim() === '' || args.trim() === '--version' || args.trim() === '-v') {
+    return {
+      output: `
+   _   _           _        _     
+  | \\ | | ___   __| | ___  (_)___ 
+  |  \\| |/ _ \\ / _\` |/ _ \\ | / __|
+  | |\\  | (_) | (_| |  __/_| \\__ \\
+  |_| \\_|\\___/ \\__,_|\\___(_) |___/
+                          |__/    
+
+${tr(ctx,
+  "Node.js v22.11.0\nWelcome to Node.js REPL.\n> console.log('Hello from the terminal!')\nHello from the terminal!\n> process.exit()\nJust kidding! This isn't real Node.js 😄",
+  "Node.js v22.11.0\nBem-vindo ao Node.js REPL.\n> console.log('Ola do terminal!')\nOla do terminal!\n> process.exit()\nBrincadeira! Isso nao e Node.js de verdade 😄"
+)}`
+    };
+  }
+  
+  if (args.includes('.js')) {
+    return {
+      output: tr(ctx,
+        `node: attempting to run '${args}'\nError: File system is read-only in this dimension! 📁🔒`,
+        `node: tentando executar '${args}'\nErro: Sistema de arquivos e somente leitura nesta dimensao! 📁🔒`
+      )
+    };
+  }
+  
+  return {
+    output: tr(ctx,
+      `> ${args}\nReferenceError: This is a portfolio terminal, not a JS runtime! 💚`,
+      `> ${args}\nReferenceError: Este e um terminal de portfolio, nao um runtime JS! 💚`
+    )
+  };
+});
+
+registerCommand('java', (args, ctx) => {
+  if (args.trim() === '' || args.trim() === '-version' || args.trim() === '--version') {
+    return {
+      output: `
+     _                  
+    | | __ ___   ____ _ 
+ _  | |/ _\` \\ \\ / / _\` |
+| |_| | (_| |\\ V / (_| |
+ \\___/ \\__,_| \\_/ \\__,_|
+
+${tr(ctx,
+  "java version \"21.0.1\" 2023-10-17 LTS\nJava(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29)\n\nBut this is MS-DOS, so no JVM for you! ☕❌",
+  "java version \"21.0.1\" 2023-10-17 LTS\nJava(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29)\n\nMas isso e MS-DOS, entao sem JVM pra voce! ☕❌"
+)}`
+    };
+  }
+  
+  if (args.includes('.java') || args.includes('.class')) {
+    return {
+      output: tr(ctx,
+        `javac: compiling ${args}\nError: OutOfMemoryError: MS-DOS ran out of conventional memory!\n(640K ought to be enough for anybody) 💾`,
+        `javac: compilando ${args}\nErro: OutOfMemoryError: MS-DOS ficou sem memoria convencional!\n(640K deveria ser suficiente para qualquer um) 💾`
+      )
+    };
+  }
+  
+  return {
+    output: tr(ctx,
+      `Exception in thread "main":\nPortfolioException: Cannot run Java in a DOS terminal!\n  at miguel.portfolio.Terminal.main(Terminal.java:1994) ☕`,
+      `Exception in thread "main":\nPortfolioException: Nao pode rodar Java num terminal DOS!\n  at miguel.portfolio.Terminal.main(Terminal.java:1994) ☕`
+    )
+  };
+});
+
+// ============================================================================
+// EASTER EGGS
+// ============================================================================
+
+registerCommand('rm', (args, ctx) => {
+  const trimmed = args.trim();
+  if (trimmed === '-rf' || trimmed === '-rf /' || trimmed === '-rf *') {
+    return {
+      output: '',
+      animate: true,
+      lines: tr(ctx,
+        'Deleting all files...|Just kidding! Nice try though. 😄|Your files are safe... for now.',
+        'Deletando todos os arquivos...|Brincadeira! Boa tentativa 😄|Seus arquivos estao seguros... por enquanto.'
+      ).split('|')
+    };
+  }
+});
+
+registerCommand('hack', (args, ctx) => {
+  return {
+    output: '',
+    animate: true,
+    lines: tr(ctx,
+      'Initiating hack sequence...|[████████████] 100%|Access denied. You\'re not Mr. Robot. 🤖',
+      'Iniciando sequencia de invasao...|[████████████] 100%|Acesso negado. Voce nao e o Mr. Robot. 🤖'
+    ).split('|')
+  };
+});
+
+registerCommand('matrix', (args, ctx) => {
+  return {
+    output: '',
+    animate: true,
+    lines: tr(ctx,
+      'Wake up, Neo...|The Matrix has you...|Follow the white rabbit. 🐰',
+      'Acorde, Neo...|A Matrix pegou voce...|Siga o coelho branco. 🐰'
+    ).split('|')
+  };
+});
+
+registerCommand('ping', (args, ctx) => {
+  return {
+    output: '',
+    animate: true,
+    lines: tr(ctx,
+      'Pinging google.com [142.250.185.78]|Request timed out.|Just kidding, no internet for you! 📶❌',
+      'Pingando google.com [142.250.185.78]|Tempo esgotado para a solicitacao.|Brincadeira, sem internet pra voce! 📶❌'
+    ).split('|')
+  };
+});
+
+registerCommand('format', (args, ctx) => {
+  if (args.trim() === 'c:') {
+    return {
+      output: '',
+      animate: true,
+      lines: tr(ctx,
+        'Formatting C: drive...|Progress: [▓▓▓▓▓▓▓▓▓▓] 99%|ERROR: Just kidding! 😅',
+        'Formatando unidade C: ...|Progresso: [▓▓▓▓▓▓▓▓▓▓] 99%|ERRO: zoeira! 😅'
+      ).split('|')
+    };
+  }
+});
+
+registerCommand('tree', (args, ctx) => {
+  return {
+    output: `🌳\n${tr(ctx, "There's your tree!", "Ta ai sua arvore!")}`
+  };
+});
+
+registerCommand('whoami', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "You are a curious visitor.\nWelcome to my portfolio! 👋",
+      "Voce e um visitante curioso.\nBem-vindo ao meu portfolio! 👋"
+    )
+  };
+});
+
+registerCommand('date', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "Current date is: 11-13-2025\n(Time is an illusion in DOS) ⏰",
+      "Data atual: 13-11-2025\n(O tempo e uma ilusao no DOS) ⏰"
+    )
+  };
+});
+
+registerCommand('time', (args, ctx) => {
+  return {
+    output: tr(ctx, "Current time is: ADVENTURE TIME! 🕐", "Hora atual: HORA DA AVENTURA! 🕐")
+  };
+});
+
+registerCommand('echo', (args, ctx) => {
+  if (args === '') return { output: '' };
+  return { output: args };
+});
+
+registerCommand('cat', (args, ctx) => {
+  return {
+    output: "     /\\_/\\  \n    ( o.o ) \n     > ^ <\n\nMeow! 🐱"
+  };
+});
+
+registerCommand('sl', (args, ctx) => {
+  return {
+    output: tr(ctx,
+      "🚂💨 Choo choo! (Steam Locomotive passed by)\n(This is what happens when you type 'ls' wrong!)",
+      "🚂💨 Choo choo! (A locomotiva passou!)\n(Isso acontece quando voce digita 'ls' errado!)"
+    )
+  };
+});
+
+registerCommand('cowsay', (args, ctx) => {
+  const message = args.trim() || 'Hello!';
+  const msgLength = message.length;
+  const border = "_".repeat(msgLength + 2);
+  
+  return {
+    output: ` ${border}\n< ${message} >\n ${border.replace(/_/g, "-")}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`
+  };
+});
+
+registerCommand('ipconfig', (args, ctx) => {
+  return {
+    output: `IP Address: 127.0.0.1\n${tr(ctx, "No place like home! 🏠", "Nada como o lar! 🏠")}`
+  };
+});
+
+registerCommand('ifconfig', (args, ctx) => {
+  return commands['ipconfig'](args, ctx);
+});
+
+registerCommand('python', (args, ctx) => {
+  if (args.trim() === '') {
+    return {
+      output: `    ____        __  __                 
+   / __ \\__  __/ /_/ /_  ____  ____   
+  / /_/ / / / / __/ __ \\/ __ \\/ __ \\  
+ / ____/ /_/ / /_/ / / / /_/ / / / /  
+/_/    \\__, /\\__/_/ /_/\\____/_/ /_/   
+      /____/                          
+
+${tr(ctx,
+  "Python 3.13.0 (MS-DOS port)\nType 'help' for more information.\n>>> import this\nThe Zen of Python:\n- Simple is better than complex.\n- Now is better than never.\n- But you can't actually run Python here! 🐍",
+  "Python 3.13.0 (versao MS-DOS)\nDigite 'help' para mais informacoes.\n>>> import this\nO Zen do Python:\n- Simples e melhor que complexo.\n- Agora e melhor que nunca.\n- Mas voce nao pode rodar Python aqui! 🐍"
+)}`
+    };
+  }
+  
+  return {
+    output: tr(ctx,
+      `>>> ${args}\nSyntaxError: This is a portfolio, not a Python interpreter! 🐍`,
+      `>>> ${args}\nSyntaxError: Isto e um portfolio, nao um interpretador Python! 🐍`
+    )
+  };
+});
+
+registerCommand('node', (args, ctx) => {
+  if (args.trim() === '' || args.trim() === '--version' || args.trim() === '-v') {
+    return {
+      output: `
+   _   _           _        _     
+  | \\ | | ___   __| | ___  (_)___ 
+  |  \\| |/ _ \\ / _\` |/ _ \\ | / __|
+  | |\\  | (_) | (_| |  __/_| \\__ \\
+  |_| \\_|\\___/ \\__,_|\\___(_) |___/
+                          |__/    
+
+${tr(ctx,
+  "Node.js v22.11.0\nWelcome to Node.js REPL.\n> console.log('Hello from the terminal!')\nHello from the terminal!\n> process.exit()\nJust kidding! This isn't real Node.js 😄",
+  "Node.js v22.11.0\nBem-vindo ao Node.js REPL.\n> console.log('Ola do terminal!')\nOla do terminal!\n> process.exit()\nBrincadeira! Isso nao e Node.js de verdade 😄"
+)}`
+    };
+  }
+  
+  if (args.includes('.js')) {
+    return {
+      output: tr(ctx,
+        `node: attempting to run '${args}'\nError: File system is read-only in this dimension! 📁🔒`,
+        `node: tentando executar '${args}'\nErro: Sistema de arquivos e somente leitura nesta dimensao! 📁🔒`
+      )
+    };
+  }
+  
+  return {
+    output: tr(ctx,
+      `> ${args}\nReferenceError: This is a portfolio terminal, not a JS runtime! 💚`,
+      `> ${args}\nReferenceError: Este e um terminal de portfolio, nao um runtime JS! 💚`
+    )
+  };
+});
+
+registerCommand('java', (args, ctx) => {
+  if (args.trim() === '' || args.trim() === '-version' || args.trim() === '--version') {
+    return {
+      output: `
+     _                  
+    | | __ ___   ____ _ 
+ _  | |/ _\` \\ \\ / / _\` |
+| |_| | (_| |\\ V / (_| |
+ \\___/ \\__,_| \\_/ \\__,_|
+
+${tr(ctx,
+  "java version \"21.0.1\" 2023-10-17 LTS\nJava(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29)\n\nBut this is MS-DOS, so no JVM for you! ☕❌",
+  "java version \"21.0.1\" 2023-10-17 LTS\nJava(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29)\n\nMas isso e MS-DOS, entao sem JVM pra voce! ☕❌"
+)}`
+    };
+  }
+  
+  if (args.includes('.java') || args.includes('.class')) {
+    return {
+      output: tr(ctx,
+        `javac: compiling ${args}\nError: OutOfMemoryError: MS-DOS ran out of conventional memory!\n(640K ought to be enough for anybody) 💾`,
+        `javac: compilando ${args}\nErro: OutOfMemoryError: MS-DOS ficou sem memoria convencional!\n(640K deveria ser suficiente para qualquer um) 💾`
+      )
+    };
+  }
+  
+  return {
+    output: tr(ctx,
+      `Exception in thread "main":\nPortfolioException: Cannot run Java in a DOS terminal!\n  at miguel.portfolio.Terminal.main(Terminal.java:1994) ☕`,
+      `Exception in thread "main":\nPortfolioException: Nao pode rodar Java num terminal DOS!\n  at miguel.portfolio.Terminal.main(Terminal.java:1994) ☕`
+    )
+  };
 });
