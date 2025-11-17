@@ -31,6 +31,8 @@ export interface CommandResult {
   output: string;
   animate?: boolean;
   lines?: string[];
+  // If provided, UI will render next prompt using this path (e.g., after 'cd')
+  promptPath?: string;
 }
 
 export type CommandHandler = (
@@ -61,7 +63,26 @@ export function executeCommand(
     if (result) return result;
   }
 
-  return { output: `Illegal command: ${commandLine}` };
+  // Friendly fallback with suggestions
+  const names = Object.keys(commands);
+  const starts = names.filter(n => n.startsWith(command)).slice(0, 6);
+  const contains = names.filter(n => !n.startsWith(command) && n.includes(command)).slice(0, 6 - starts.length);
+  const suggestions = [...starts, ...contains];
+  if (suggestions.length) {
+    const list = suggestions.join(', ');
+    return {
+      output: tr(
+        ctx,
+        `Unknown command: ${commandLine}\nDid you mean: ${list}?\nTip: type 'help' to see available commands.`,
+        `Comando desconhecido: ${commandLine}\nVoce quis dizer: ${list}?\nDica: digite 'help' para ver os comandos disponiveis.`
+      )
+    };
+  }
+
+  return { output: tr(ctx,
+    `Unknown command: ${commandLine}\nTip: type 'help' to see available commands.`,
+    `Comando desconhecido: ${commandLine}\nDica: digite 'help' para ver os comandos disponiveis.`
+  ) };
 }
 
 // Return a snapshot of registered command names (lowercase)
@@ -168,7 +189,7 @@ registerCommand('cd', (args, ctx) => {
   if (targetDirName === '..') {
     if (ctx.currentDir.parent) {
       ctx.setCurrentDir(ctx.currentDir.parent);
-      return { output: '' };
+      return { output: '', promptPath: ctx.currentDir.parent.path };
     } else {
       if (ctx.mode === 'advanced') {
         window.location.href = '/';
@@ -183,9 +204,16 @@ registerCommand('cd', (args, ctx) => {
 
     if (newEntry.type === 'dir') {
       ctx.setCurrentDir(newEntry as Directory);
-      return { output: '' };
+      return { output: '', promptPath: (newEntry as Directory).path };
     } else {
-      return { output: t.terminal.errors.invalidDir };
+      // Trying to cd into a file -> hint to use start
+      return {
+        output: tr(
+          ctx,
+          `That's a file. Use 'start ${targetDirName}' to open it.`,
+          `Isso e um arquivo. Use 'start ${targetDirName}' para abrir.`
+        )
+      };
     }
   }
   
@@ -212,8 +240,15 @@ registerCommand('start', (args, ctx) => {
         return { output: t.terminal.errors.emptyFile.replace('{fileName}', fileName) };
       }
     } else {
+      // Trying to start a directory -> hint to use cd
       ctx.setShowAboutImage(false);
-      return { output: t.terminal.errors.cannotStartDir.replace('{fileName}', fileName) };
+      return {
+        output: tr(
+          ctx,
+          `That's a directory. Use 'cd ${fileName}' to enter it.`,
+          `Isso e uma pasta. Use 'cd ${fileName}' para entrar.`
+        )
+      };
     }
   }
   
@@ -360,6 +395,33 @@ registerCommand('time', (args, ctx) => {
   return {
     output: tr(ctx, "Current time is: ADVENTURE TIME! 🕐", "Hora atual: HORA DA AVENTURA! 🕐")
   };
+});
+
+// Fun easter eggs
+registerCommand('42', (args, ctx) => {
+  return {
+    output: tr(
+      ctx,
+      "The Answer to the Ultimate Question of Life, the Universe, and Everything is... 42. 🌌",
+      "A Resposta Para a Grande Pergunta da Vida, do Universo e de Tudo mais =... 42. 🌌."
+    )
+  };
+});
+
+registerCommand('duda', (args, ctx) => {
+  const heart = [
+    "  __  __   __  __  ",
+    " /  \\/  \\ /  \\/  \\",
+    " \\      / \\      / ",
+    "  \\    /   \\    /  ",
+    "   \\__/     \\__/   ",
+  ].join('\n');
+  const msg = tr(
+    ctx,
+    "For Duda: thanks for being the brightest part of my universe. ❤",
+    "Para a Duda: voce e a parte mais brilhante do meu universo. ❤"
+  );
+  return { output: `${heart}\n\n${msg}` };
 });
 
 registerCommand('echo', (args, ctx) => {

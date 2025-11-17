@@ -115,6 +115,381 @@ function getSiteContent(lang: Language): string {
   ].join('\n');
 }
 
+// ==========================
+// Projects content (PT/EN)
+// ==========================
+function projectHeader(title: string) {
+  const line = '─'.repeat(Math.max(3, Math.min(31, title.length + 8)));
+  return [
+    `┌${line}┐`,
+    `│  ${title.padEnd(line.length - 4, ' ')}  │`,
+    `└${line}┘`,
+    ''
+  ];
+}
+
+function projectPortfolio(lang: Language): string {
+  const header = projectHeader(lang === 'pt' ? '🖥️ Portfolio Terminal' : '🖥️ Terminal Portfolio');
+  const body = lang === 'pt'
+    ? [
+        'Stack: Next.js, React, TypeScript, CSS Modules',
+        'Tema CRT retrô com comandos (git, npm, etc.) e autocomplete.',
+        'Destaques:',
+        '- Autocomplete com rotação por Tab (comandos/args).',
+        '- Easter eggs (42, sl, etc.) e animações.',
+        '- Modo iniciante com botões e dicas.',
+        '',
+        'Experimente:',
+        "- 'help', 'dir', 'cd skills', 'start skills.txt'",
+      ]
+    : [
+        'Stack: Next.js, React, TypeScript, CSS Modules',
+        'Retro CRT theme with commands (git, npm, etc.) and autocomplete.',
+        'Highlights:',
+        '- Tab-cycling autocomplete (commands/args).',
+        '- Easter eggs (42, sl, etc.) and animations.',
+        '- Beginner mode with buttons and tips.',
+        '',
+        'Try:',
+        "- 'help', 'dir', 'cd skills', 'start skills.txt'",
+      ];
+  return [...header, ...body, ''].join('\n');
+}
+
+function projectInvoiceHub(lang: Language): string {
+  const header = projectHeader(lang === 'pt' ? '📄 InvoiceHub (ASP.NET + Angular)' : '📄 InvoiceHub (ASP.NET + Angular)');
+  const body = lang === 'pt'
+    ? [
+        'Emissao de notas, multi-tenant, perfis (admin/financeiro/vendas).',
+        'Stack: ASP.NET Core, EF Core, Angular, PostgreSQL.',
+        'Integrações: Stripe, e-mail, exportação PDF.',
+        'Qualidade: testes (xUnit), CI/CD, Docker.',
+      ]
+    : [
+        'Billing app, multi-tenant, roles (admin/finance/sales).',
+        'Stack: ASP.NET Core, EF Core, Angular, PostgreSQL.',
+        'Integrations: Stripe, email, PDF export.',
+        'Quality: tests (xUnit), CI/CD, Docker.',
+      ];
+  return [...header, ...body, ''].join('\n');
+}
+
+function projectTaskFlow(lang: Language): string {
+  const header = projectHeader(lang === 'pt' ? '✅ TaskFlow (NestJS + Postgres)' : '✅ TaskFlow (NestJS + Postgres)');
+  const body = lang === 'pt'
+    ? [
+        'Gestão de tarefas com filas e realtime.',
+        'Stack: NestJS, PostgreSQL, Redis, Bull, WebSockets.',
+        'Infra: Docker Compose, migrações, seeds.',
+        'Extras: RBAC, auditoria, relatórios.',
+      ]
+    : [
+        'Task management with queues and realtime.',
+        'Stack: NestJS, PostgreSQL, Redis, Bull, WebSockets.',
+        'Infra: Docker Compose, migrations, seeds.',
+        'Extras: RBAC, auditing, reports.',
+      ];
+  return [...header, ...body, ''].join('\n');
+}
+
+function projectRetroUI(lang: Language): string {
+  const header = projectHeader(lang === 'pt' ? '🟩 Retro CRT UI Kit' : '🟩 Retro CRT UI Kit');
+  const body = lang === 'pt'
+    ? [
+        'Design system com tema CRT neon para React.',
+        'Componentes: Botões, cards, terminal, tipografia.',
+        'Foco: Acessibilidade, CSS vars, dark-mode.',
+        'Licença: MIT, open-source.',
+      ]
+    : [
+        'Design system with neon CRT theme for React.',
+        'Components: Buttons, cards, terminal, typography.',
+        'Focus: Accessibility, CSS vars, dark-mode.',
+        'License: MIT, open-source.',
+      ];
+  return [...header, ...body, ''].join('\n');
+}
+
+function projectBlazorFinance(lang: Language): string {
+  const header = projectHeader(lang === 'pt' ? '💰 Blazor Finance' : '💰 Blazor Finance');
+  const body = lang === 'pt'
+    ? [
+        'Dashboard de finanças pessoais.',
+        'Stack: Blazor Server, EF Core, Charts, Identity.',
+        'Recursos: metas, categorias, relatórios mensais.',
+      ]
+    : [
+        'Personal finance dashboard.',
+        'Stack: Blazor Server, EF Core, Charts, Identity.',
+        'Features: goals, categories, monthly reports.',
+      ];
+  return [...header, ...body, ''].join('\n');
+}
+
+function projectModernization(lang: Language): string {
+  const header = projectHeader(lang === 'pt' ? '🏗️ Modernização WebForms → ASP.NET Core' : '🏗️ Modernization WebForms → ASP.NET Core');
+  const body = lang === 'pt'
+    ? [
+        'Migração incremental usando Strangler Fig Pattern.',
+        'Práticas: DDD light, CQRS, testes de contrato.',
+        'Observabilidade: logs estruturados, métricas.',
+      ]
+    : [
+        'Incremental migration using Strangler Fig Pattern.',
+        'Practices: light DDD, CQRS, contract tests.',
+        'Observability: structured logs, metrics.',
+      ];
+  return [...header, ...body, ''].join('\n');
+}
+
+function getProjectFiles(lang: Language) {
+  return {
+    "portfolio-terminal.txt": {
+      type: 'file' as const,
+      extension: 'TXT',
+      size: 1024,
+      date: '11-09-25',
+      time: '10:10a',
+      content: projectPortfolio(lang)
+    },
+    "invoicehub.txt": {
+      type: 'file' as const,
+      extension: 'TXT',
+      size: 1024,
+      date: '11-08-25',
+      time: '2:30p',
+      content: projectInvoiceHub(lang)
+    },
+    "taskflow.txt": {
+      type: 'file' as const,
+      extension: 'TXT',
+      size: 768,
+      date: '11-08-25',
+      time: '5:45p',
+      content: projectTaskFlow(lang)
+    },
+    "retro-crt-ui.txt": {
+      type: 'file' as const,
+      extension: 'TXT',
+      size: 640,
+      date: '11-07-25',
+      time: '11:20a',
+      content: projectRetroUI(lang)
+    },
+    "blazor-finance.txt": {
+      type: 'file' as const,
+      extension: 'TXT',
+      size: 640,
+      date: '11-06-25',
+      time: '4:05p',
+      content: projectBlazorFinance(lang)
+    },
+    "modernization.txt": {
+      type: 'file' as const,
+      extension: 'TXT',
+      size: 700,
+      date: '11-05-25',
+      time: '3:00p',
+      content: projectModernization(lang)
+    },
+    "readme.txt": {
+      type: 'file' as const,
+      extension: 'TXT',
+      size: 320,
+      date: '11-08-25',
+      time: '9:20a',
+      content: (
+        lang === 'pt'
+          ? [
+              'Bem-vindo aos projetos! Abra um arquivo com:',
+              "- 'start portfolio-terminal.txt'",
+              "- 'start invoicehub.txt'",
+              "- 'start taskflow.txt'",
+              "- 'start retro-crt-ui.txt'",
+              "- 'start blazor-finance.txt'",
+              "- 'start modernization.txt'",
+            ]
+          : [
+              'Welcome to projects! Open a file with:',
+              "- 'start portfolio-terminal.txt'",
+              "- 'start invoicehub.txt'",
+              "- 'start taskflow.txt'",
+              "- 'start retro-crt-ui.txt'",
+              "- 'start blazor-finance.txt'",
+              "- 'start modernization.txt'",
+            ]
+      ).join('\n')
+    }
+  } as const;
+}
+
+// Skills content helpers (PT/EN) with 20-slot bars (each = 5%)
+function getFrontendSkills(lang: Language): string {
+  if (lang === 'pt') {
+    return [
+      "┌───────────────────────────────┐",
+      "│      💻 Frontend Skills         │",
+      "└───────────────────────────────┘",
+      "",
+      "HTML/CSS         [███████████████████░] 95%",
+      "WebForms (.NET)  [████████████████░░░░] 80%",
+      "Blazor           [████████████░░░░░░░░] 60%",
+      "Angular          [█████████████░░░░░░░] 65%",
+      "JavaScript       [█████████████░░░░░░░] 65%",
+      "TypeScript       [████████████░░░░░░░░] 60%",
+      "React            [████████░░░░░░░░░░░░] 40%",
+      "UI/UX/Figma      [████████████░░░░░░░░] 60%",
+      "",
+      "Destaque: experiencia forte em WebForms, aplicacoes empresariais e",
+      "frameworks Microsoft; front moderno em evolucao.",
+      "",
+      "Use 'start backend.txt' para backend ou 'start skills.txt' para painel geral."
+    ].join('\n');
+  }
+  return [
+    "┌───────────────────────────────┐",
+    "│      💻 Frontend Skills         │",
+    "└───────────────────────────────┘",
+    "",
+    "HTML/CSS         [███████████████████░] 95%",
+    "WebForms (.NET)  [████████████████░░░░] 80%",
+    "Blazor           [████████████░░░░░░░░] 60%",
+    "Angular          [█████████████░░░░░░░] 65%",
+    "JavaScript       [█████████████░░░░░░░] 65%",
+    "TypeScript       [████████████░░░░░░░░] 60%",
+    "React            [████████░░░░░░░░░░░░] 40%",
+    "UI/UX/Figma      [████████████░░░░░░░░] 60%",
+    "",
+    "Highlight: strong experience in WebForms, enterprise apps,",
+    "and Microsoft stack; modern frontend evolving.",
+    "",
+    "Use 'start backend.txt' for backend or 'start skills.txt' for the dashboard."
+  ].join('\n');
+}
+
+function getBackendSkills(lang: Language): string {
+  if (lang === 'pt') {
+    return [
+      "┌───────────────────────────────┐",
+      "│       🖥️ Backend Skills         │",
+      "└───────────────────────────────┘",
+      "",
+      "C# / .NET        [██████████████████░░] 90%",
+      "ASP.NET (MVC/API)[█████████████████░░░] 85%",
+      "NestJS           [███████████████░░░░░] 75%",
+      "Node.js          [██████████████░░░░░░] 70%",
+      "Python           [████████████░░░░░░░░] 60%",
+      "PHP/Laravel      [████████████░░░░░░░░] 60%",
+      "APIs REST        [████████████████░░░░] 80%",
+      "Oracle PL/SQL    [███████████████░░░░░] 75%",
+      "MySQL            [███████████████░░░░░] 75%",
+      "Redis            [████████████░░░░░░░░] 60%",
+      "RabbitMQ         [██████████░░░░░░░░░░] 50%",
+      "Docker/CI/CD     [█████████████░░░░░░░] 65%",
+      "Git/GitHub       [████████████████░░░░] 80%",
+      "",
+      "Destaque: backend e meu forte; dominio do ecossistema .NET e APIs robustas.",
+      "",
+      "Use 'start frontend.txt' para frontend ou 'start skills.txt' para painel geral."
+    ].join('\n');
+  }
+  return [
+    "┌───────────────────────────────┐",
+    "│       🖥️ Backend Skills         │",
+    "└───────────────────────────────┘",
+    "",
+    "C# / .NET        [██████████████████░░] 90%",
+    "ASP.NET (MVC/API)[█████████████████░░░] 85%",
+    "NestJS           [███████████████░░░░░] 75%",
+    "Node.js          [██████████████░░░░░░] 70%",
+    "Python           [████████████░░░░░░░░] 60%",
+    "PHP/Laravel      [████████████░░░░░░░░] 60%",
+    "REST APIs        [████████████████░░░░] 80%",
+    "PostgreSQL       [███████████████░░░░░] 75%",
+    "MySQL            [███████████████░░░░░] 75%",
+    "Redis            [████████████░░░░░░░░] 60%",
+    "RabbitMQ         [██████████░░░░░░░░░░] 50%",
+    "Docker/CI/CD     [█████████████░░░░░░░] 65%",
+    "Git/GitHub       [████████████████░░░░] 80%",
+    "",
+    "Highlight: backend is my core; solid .NET ecosystem and robust APIs.",
+    "",
+    "Use 'start frontend.txt' for frontend or 'start skills.txt' for the dashboard."
+  ].join('\n');
+}
+
+function getSoftSkills(lang: Language): string {
+  if (lang === 'pt') {
+    return [
+      "┌───────────────────────────────┐",
+      "│        🤝 Soft Skills           │",
+      "└───────────────────────────────┘",
+      "",
+      "Criatividade     [████████████████████] 100%🧩",
+      "Comunicacao      [██████████████████░░] 90% 🗣️",
+      "Lideranca        [████████████████░░░░] 80% 👑",
+      "Proatividade     [██████████████████░░] 90% ⚡",
+      "Autonomia        [██████████████████░░] 90% 🏃",
+      "Ingles (B2)      [█████████████████░░░] 85% 🇺🇸",
+      "Frances (A2)     [████████░░░░░░░░░░░░] 40% 🇫🇷",
+      "",
+      "Destaque: lideranca tecnica, didatica forte, tomada de decisao.",
+      "",
+      "Use 'start frontend.txt' ou 'start backend.txt' para skills tecnicas."
+    ].join('\n');
+  }
+  return [
+    "┌───────────────────────────────┐",
+    "│        🤝 Soft Skills           │",
+    "└───────────────────────────────┘",
+    "",
+    "Creativity      [████████████████████] 100%🧩",
+    "Communication   [██████████████████░░] 90% 🗣️",
+    "Leadership      [████████████████░░░░] 80% 👑",
+    "Proactivity     [██████████████████░░] 90% ⚡",
+    "Autonomy        [██████████████████░░] 90% 🏃",
+    "English (B2)    [█████████████████░░░] 85% 🇺🇸",
+    "French (A2)     [████████░░░░░░░░░░░░] 40% 🇫🇷",
+    "",
+    "Highlight: technical leadership, strong teaching, decision-making.",
+    "",
+    "Use 'start frontend.txt' or 'start backend.txt' for technical skills."
+  ].join('\n');
+}
+
+function getSkillsPanel(lang: Language): string {
+  if (lang === 'pt') {
+    return [
+      "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
+      "┃         🌟 Painel de Skills 🌟             ┃",
+      "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛",
+      "",
+      "Frontend   [██████████████░░░░░░] 70% 💻 | WebForms, Angular, Blazor",
+      "Backend    [██████████████████░░] 90% 🖥️ | .NET, NestJS, Node.js, SQL",
+      "SoftSkills [██████████████████░░] 90% 🤝 | Liderança, didática, comunicação",
+      "Idiomas    [█████████████████░░░] 85% 🌎 | Inglês B2, Francês A2",
+      "",
+      "Acesse detalhes: 'start frontend.txt', 'start backend.txt', 'start softskills.txt'",
+      "",
+      "Miguel Sena - 2025 - Portfolio Terminal Edition"
+    ].join('\n');
+  }
+  return [
+    "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
+    "┃         🌟 Skills Dashboard 🌟             ┃",
+    "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛",
+    "",
+    "Frontend   [██████████████░░░░░░] 70% 💻 | WebForms, Angular, Blazor",
+    "Backend    [██████████████████░░] 90% 🖥️ | .NET, NestJS, Node.js, SQL",
+    "Soft Skills[██████████████████░░] 90% 🤝 | Leadership, teaching, comms",
+    "Languages  [█████████████████░░░] 85% 🌎 | English B2, French A2",
+    "",
+    "Open details: 'start frontend.txt', 'start backend.txt', 'start softskills.txt'",
+    "",
+    "Miguel Sena -  2025 - Portfolio Terminal Edition"
+  ].join('\n');
+}
+
 const createRoot = (lang: Language): Directory => {
   return {
     path: "\\",
@@ -123,6 +498,7 @@ const createRoot = (lang: Language): Directory => {
         type: 'dir',
         path: "\\projects",
         children: {
+          ...getProjectFiles(lang),
           "site.txt": {
             type: 'file',
             size: 1337,
@@ -135,13 +511,53 @@ const createRoot = (lang: Language): Directory => {
         date: "11-08-25",
         time: "9:10a"
       },
+
       "skills": {
         type: 'dir',
         path: "\\skills",
-        children: {},
+        children: {
+
+          "frontend.txt": {
+            type: 'file',
+            extension: "TXT",
+            size: 512,
+            date: "11-08-25",
+            time: "9:03a",
+            content: getFrontendSkills(lang)
+          },
+
+          "backend.txt": {
+            type: 'file',
+            extension: "TXT",
+            size: 512,
+            date: "11-08-25",
+            time: "9:04a",
+            content: getBackendSkills(lang)
+          },
+
+          "softskills.txt": {
+            type: 'file',
+            extension: "TXT",
+            size: 256,
+            date: "11-08-25",
+            time: "9:05a",
+            content: getSoftSkills(lang)
+          },
+
+          "skills.txt": {
+            type: 'file',
+            extension: "TXT",
+            size: 256,
+            date: "11-08-25",
+            time: "9:06a",
+            content: getSkillsPanel(lang)
+          }
+
+        },
         date: "11-08-25",
         time: "9:02a"
       },
+
       "about": {
         type: 'file',
         extension: "TXT",
@@ -150,6 +566,7 @@ const createRoot = (lang: Language): Directory => {
         time: "4:55p",
         content: getAboutContent(lang)
       },
+
       "contact": {
         type: 'file',
         extension: "BAT",
@@ -214,7 +631,30 @@ export default function Home() {
     addParentLinks(root, null);
     setCurrentDir(root);
     const defaultText = getDefaultText(lang);
-    setDosText(defaultText + '\n' + `C:${root.path}>`);
+    if (selectedMode === 'beginner') {
+      const tips = lang === 'pt'
+        ? [
+            '',
+            'Dicas (Modo Iniciante):',
+            '- Use os botoes para navegar.',
+            "- 'dir' lista o que tem aqui.",
+            "- 'cd nome' entra numa pasta. 'cd ..' volta.",
+            "- 'start arquivo' abre um arquivo (ex.: start about).",
+            "- Se no computador, pressione Tab para completar comandos.",
+          ].join('\n')
+        : [
+            '',
+            'Tips (Beginner Mode):',
+            '- Use the buttons these buttons to navigate.',
+            "- 'dir' lists what is here.",
+            "- 'cd name' enters a folder. 'cd ..' goes back.",
+            "- 'start file' opens a file (e.g.: start about).",
+            "- If you are on PC, press Tab to autocomplete commands.",
+          ].join('\n');
+      setDosText(defaultText + tips + '\n' + `C:${root.path}>`);
+    } else {
+      setDosText(defaultText + '\n' + `C:${root.path}>`);
+    }
   };
 
   const getDefaultText = (lang: Language): string => {
@@ -307,14 +747,19 @@ export default function Home() {
         return defaultText + '\n' + `C:${root.path}>`;
       }
 
+      // Compute prompt to print, preferring an override path from the command result (e.g., after 'cd')
+      const computedPrompt = result && (result as any).promptPath
+        ? `C:${(result as any).promptPath}>`
+        : (currentDir ? `C:${currentDir.path}>` : 'C:\\>');
+
       // Handle animated responses
       if (result.animate && result.lines) {
-        animateLines(result.lines, currentPrompt);
+        animateLines(result.lines, computedPrompt);
         return prev;
       }
 
-      // Handle directory changes
-      const newPrompt = currentDir ? `C:${currentDir.path}>` : 'C:\\>';
+      // Handle directory changes (or regular prompt draw)
+      const newPrompt = computedPrompt;
       
       // Regular output
       if (result.output) {
@@ -329,6 +774,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -355,7 +801,9 @@ export default function Home() {
       if (e.key === "Enter") {
         const lastLineIndex = dosText.lastIndexOf('\n');
         const currentLine = dosText.substring(lastLineIndex + 1);
-        const commandText = currentLine.substring(currentPrompt.length);
+        const promptEnd = currentLine.indexOf('>');
+        const printedPromptLength = promptEnd >= 0 ? (promptEnd + 1) : currentPrompt.length;
+        const commandText = currentLine.substring(printedPromptLength);
         const finalCommand = commandText.trim();
 
         // Reset autocomplete state
@@ -375,17 +823,21 @@ export default function Home() {
       if (e.key === "Backspace") {
         setDosText(prev => {
           const lastLineIndex = prev.lastIndexOf('\n');
-            const currentLine = prev.substring(lastLineIndex + 1);
-            if (currentLine.length > currentPrompt.length) return prev.slice(0, -1);
-            return prev;
+          const currentLine = prev.substring(lastLineIndex + 1);
+          const promptEnd = currentLine.indexOf('>');
+          const printedPromptLength = promptEnd >= 0 ? (promptEnd + 1) : currentPrompt.length;
+          if (currentLine.length > printedPromptLength) return prev.slice(0, -1);
+          return prev;
         });
         return;
       }
 
       if (e.key === "Tab") {
-        const lastLineIndex = dosText.lastIndexOf('\n');
-        const currentLine = dosText.substring(lastLineIndex + 1);
-        const inputPortion = currentLine.substring(currentPrompt.length);
+  const lastLineIndex = dosText.lastIndexOf('\n');
+  const currentLine = dosText.substring(lastLineIndex + 1);
+  const promptEnd = currentLine.indexOf('>');
+  const printedPrompt = promptEnd >= 0 ? currentLine.substring(0, promptEnd + 1) : currentPrompt;
+  const inputPortion = currentLine.substring(printedPrompt.length);
         const firstSpace = inputPortion.indexOf(' ');
 
         // COMMAND NAME MODE
@@ -396,7 +848,7 @@ export default function Home() {
             const nextIndex = (autoCycleIndex + 1) % autoSuggestions.length;
             setAutoCycleIndex(nextIndex);
             const chosen = autoSuggestions[nextIndex];
-            setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + chosen);
+            setDosText(prev => prev.substring(0, lastLineIndex + 1) + printedPrompt + chosen);
             return;
           }
           const pool = typed === '' ? getCommandNames().sort() : getCommandNames().filter(c => c.startsWith(typed.toLowerCase())).sort();
@@ -411,7 +863,7 @@ export default function Home() {
           setSuggestionMode('command');
           setBasePrefix(typed);
           setAutoCycleIndex(0);
-          setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + pool[0]);
+          setDosText(prev => prev.substring(0, lastLineIndex + 1) + printedPrompt + pool[0]);
           return;
         }
 
@@ -437,12 +889,13 @@ export default function Home() {
           return;
         }
 
-        if (suggestionMode === 'arg' && autoSuggestions.length > 0 && basePrefix === commandPart + ' ' + argPrefix) {
+        // Always allow cycling suggestions for arg mode, regardless of basePrefix
+        if (suggestionMode === 'arg' && autoSuggestions.length > 0) {
           const nextIndex = (autoCycleIndex + 1) % autoSuggestions.length;
           setAutoCycleIndex(nextIndex);
           const chosenArg = autoSuggestions[nextIndex];
           const remainder = argTokenEnd === -1 ? '' : afterCmd.substring(argTokenEnd);
-          setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + commandPart + ' ' + chosenArg + remainder);
+          setDosText(prev => prev.substring(0, lastLineIndex + 1) + printedPrompt + commandPart + ' ' + chosenArg + remainder);
           return;
         }
 
@@ -460,7 +913,7 @@ export default function Home() {
         setAutoCycleIndex(0);
         const chosenArg = filtered[0];
         const remainder = argTokenEnd === -1 ? '' : afterCmd.substring(argTokenEnd);
-        setDosText(prev => prev.substring(0, lastLineIndex + 1) + currentPrompt + commandPart + ' ' + chosenArg + remainder);
+        setDosText(prev => prev.substring(0, lastLineIndex + 1) + printedPrompt + commandPart + ' ' + chosenArg + remainder);
         return;
       }
 
@@ -468,7 +921,9 @@ export default function Home() {
         setDosText(prev => {
           const lastLineIndex = prev.lastIndexOf('\n');
           const currentLine = prev.substring(lastLineIndex + 1);
-          if (currentLine.length > currentPrompt.length) return prev.slice(0, -1);
+          const promptEnd = currentLine.indexOf('>');
+          const printedPromptLength = promptEnd >= 0 ? (promptEnd + 1) : currentPrompt.length;
+          if (currentLine.length > printedPromptLength) return prev.slice(0, -1);
           return prev;
         });
         return;
@@ -480,7 +935,10 @@ export default function Home() {
           setHistoryIndex(newIndex);
           setDosText(prev => {
             const lastLineIndex = prev.lastIndexOf('\n');
-            return prev.substring(0, lastLineIndex + 1) + currentPrompt + commandHistory[commandHistory.length - 1 - newIndex];
+            const line = prev.substring(lastLineIndex + 1);
+            const promptEnd = line.indexOf('>');
+            const printedPrompt = promptEnd >= 0 ? line.substring(0, promptEnd + 1) : currentPrompt;
+            return prev.substring(0, lastLineIndex + 1) + printedPrompt + commandHistory[commandHistory.length - 1 - newIndex];
           });
         }
         return;
@@ -492,13 +950,19 @@ export default function Home() {
           setHistoryIndex(newIndex);
           setDosText(prev => {
             const lastLineIndex = prev.lastIndexOf('\n');
-            return prev.substring(0, lastLineIndex + 1) + currentPrompt + commandHistory[commandHistory.length - 1 - newIndex];
+            const line = prev.substring(lastLineIndex + 1);
+            const promptEnd = line.indexOf('>');
+            const printedPrompt = promptEnd >= 0 ? line.substring(0, promptEnd + 1) : currentPrompt;
+            return prev.substring(0, lastLineIndex + 1) + printedPrompt + commandHistory[commandHistory.length - 1 - newIndex];
           });
         } else if (historyIndex === 0) {
           setHistoryIndex(-1);
           setDosText(prev => {
             const lastLineIndex = prev.lastIndexOf('\n');
-            return prev.substring(0, lastLineIndex + 1) + currentPrompt;
+            const line = prev.substring(lastLineIndex + 1);
+            const promptEnd = line.indexOf('>');
+            const printedPrompt = promptEnd >= 0 ? line.substring(0, promptEnd + 1) : currentPrompt;
+            return prev.substring(0, lastLineIndex + 1) + printedPrompt;
           });
         }
         return;
@@ -624,6 +1088,7 @@ export default function Home() {
               className={styles.commandButton}
               onClick={() => typeCommand(cmd.command)}
               disabled={isTyping}
+              title={`${language === 'pt' ? 'Executar:' : 'Run:'} ${cmd.command}`}
             >
               {cmd.label}
             </button>
