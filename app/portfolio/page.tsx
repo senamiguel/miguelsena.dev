@@ -1026,11 +1026,13 @@ export default function Home() {
       { label: tLocal.buttons.listFiles, command: 'dir' },
       { label: tLocal.buttons.clear, command: 'cls' },
       { label: tLocal.buttons.restart, command: 'restart' },
+      { label: tLocal.buttons.goTo1000Projects, command: '1000projects' },
     ] : [
       { label: 'help', command: 'help' },
       { label: 'dir', command: 'dir' },
       { label: 'cls', command: 'cls' },
       { label: 'restart', command: 'restart' },
+      { label: '1000projects', command: '1000projects' },
     ];
     const dirCommands: Array<{ label: string; command: string }> = [];
     const fileCommands: Array<{ label: string; command: string }> = [];

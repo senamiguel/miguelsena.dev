@@ -73,6 +73,7 @@ export interface Translations {
     goToSkills: string;
     goBack: string;
     goHome: string;
+    goTo1000Projects: string;
   };
 }
 
@@ -118,7 +119,7 @@ export const translations: Record<Language, Translations> = {
         desc: 'A recreation of an MS-DOS terminal as a personal portfolio.',
       },
       commands: {
-        help: '\nAvailable commands: \nhelp - Show a list of the available commands. \ncls - Clear the screen. \nrestart - Restart the session.\ndir - List the contents of the current directory.\ncd [directory] - Change the current directory.\nstart [file] - Opens a file.\n',
+        help: '\nAvailable commands: \nhelp - Show a list of the available commands. \ncls - Clear the screen. \nrestart - Restart the session.\ndir - List the contents of the current directory.\ncd [directory] - Change the current directory.\nstart [file] - Opens a file.\n1000projects - Visit the 1000 Projects Challenge.\n',
         dir: '',
         cls: '',
         restart: '',
@@ -159,6 +160,7 @@ export const translations: Record<Language, Translations> = {
       goToSkills: 'Go to Skills',
       goBack: 'Go Back',
       goHome: 'Go to Home',
+      goTo1000Projects: '1000 Projects',
     },
   },
   pt: {
@@ -202,7 +204,7 @@ export const translations: Record<Language, Translations> = {
         desc: 'Uma recriacao de um terminal MS-DOS como portfolio pessoal.',
       },
       commands: {
-        help: '\nComandos disponiveis: \nhelp - Mostra a lista de comandos disponiveis. \ncls - Limpa a tela. \nrestart - Reinicia a sessao.\ndir - Lista o conteudo do diretorio atual.\ncd [diretorio] - Muda o diretorio atual.\nstart [arquivo] - Abre um arquivo.\n',
+        help: '\nComandos disponiveis: \nhelp - Mostra a lista de comandos disponiveis. \ncls - Limpa a tela. \nrestart - Reinicia a sessao.\ndir - Lista o conteudo do diretorio atual.\ncd [diretorio] - Muda o diretorio atual.\nstart [arquivo] - Abre um arquivo.\n1000projects - Visitar o Desafio 1000 Projetos.\n',
         dir: '',
         cls: '',
         restart: '',
@@ -243,6 +245,7 @@ export const translations: Record<Language, Translations> = {
       goToSkills: 'Ir para Habilidades',
       goBack: 'Voltar',
       goHome: 'Ir para Inicio',
+      goTo1000Projects: '1000 Projetos',
     },
   },
 };

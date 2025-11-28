@@ -139,6 +139,26 @@ registerCommand('help', (args, ctx) => {
   return { output: t.terminal.commands.help };
 });
 
+registerCommand('1000projects', (args, ctx) => {
+  window.location.href = '/1000projects';
+  return { 
+    output: tr(ctx,
+      'Loading 1000 Projects Challenge...',
+      'Carregando Desafio 1000 Projetos...'
+    )
+  };
+});
+
+registerCommand('challenge', (args, ctx) => {
+  window.location.href = '/1000projects';
+  return { 
+    output: tr(ctx,
+      'Loading 1000 Projects Challenge...',
+      'Carregando Desafio 1000 Projetos...'
+    )
+  };
+});
+
 // ============================================================================
 // FILE SYSTEM COMMANDS
 // ============================================================================
