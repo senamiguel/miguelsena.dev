@@ -4,7 +4,7 @@ import LanguageModeSelector from '@/components/LanguageModeSelector';
 import styles from './page.module.css';
 import { useState, useEffect, useRef } from 'react';
 import { Language, Mode, translations } from './translations';
-import { executeCommand, Directory, FileSystemNode, getCommandNames } from './commands';
+import { executeCommand, Directory, FileSystemNode, getCommandNames, CommandResult } from './commands';
 
 function addParentLinks(dir: Directory, parent: Directory | null) {
   dir.parent = parent ? parent : undefined;
@@ -723,7 +723,7 @@ export default function Home() {
       return;
     }
 
-    const result = executeCommand(commandLine, {
+    const result: CommandResult = executeCommand(commandLine, {
       currentDir,
       language,
       mode,
@@ -748,9 +748,9 @@ export default function Home() {
       }
 
       // Compute prompt to print, preferring an override path from the command result (e.g., after 'cd')
-      const computedPrompt = result && (result as any).promptPath
-        ? `C:${(result as any).promptPath}>`
-        : (currentDir ? `C:${currentDir.path}>` : 'C:\\>');
+      const computedPrompt = result && result.promptPath
+        ? `C:${result.promptPath}>`
+        : (currentDir ? `C:${currentDir.path}>` : 'C:\>');
 
       // Handle animated responses
       if (result.animate && result.lines) {

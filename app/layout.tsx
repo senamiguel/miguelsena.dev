@@ -15,6 +15,31 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+import { Atkinson_Hyperlegible } from "next/font/google";
+
+const atkinson = Atkinson_Hyperlegible({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-atkinson",
+  display: "swap",
+});
+
+import { DM_Serif_Display, Comic_Neue } from "next/font/google";
+
+const dmSerif = DM_Serif_Display({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-dm-serif",
+  display: "swap",
+});
+
+const comicNeue = Comic_Neue({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-comic",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Miguel Sena - Software Developer",
@@ -59,7 +84,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${atkinson.variable} ${dmSerif.variable} ${comicNeue.variable} antialiased`} suppressHydrationWarning>
         {isProduction && (
           <Script id="ms-clarity" strategy="afterInteractive">
             {`(function(c,l,a,r,i,t,y){
