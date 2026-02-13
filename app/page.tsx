@@ -1,8 +1,9 @@
-
 import styles from './page.module.css';
 import Link from 'next/link';
+import { getButtonImages } from './getButtonImages';
 
-export default function Home() {
+export default async function Home() {
+  const buttonImages = getButtonImages();
   return (
     <div className={styles.container}>
       <div className={styles.backgroundImage}></div>
@@ -65,7 +66,7 @@ export default function Home() {
               </li>
               <li className={styles.listItem}>
                 <span className={styles.year}>Work:</span>
-                <a href="https://linkedin.com/in/senamiguel" target="_blank" rel="noopener noreferrer" className={styles.link}>LinkedIn</a>
+                <a href="https://linkedin.com/in/sena-miguel" target="_blank" rel="noopener noreferrer" className={styles.link}>LinkedIn</a>
               </li>
             </ul>
           </div>
@@ -79,7 +80,7 @@ export default function Home() {
               </li>
               <li className={styles.listItem}>
                 <span className={styles.year}>PGP:</span>
-                <a href="#" className={styles.link}>Key</a>
+                <a className={styles.link}>Key</a>
               </li>
               <li className={styles.listItem}>
                 <span className={styles.year}>Matrix:</span>
@@ -93,30 +94,45 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Buttons Section - Crowded Grid look */}
         <section className={styles.buttonsSection}>
           <h3 className={styles.buttonsTitle}>Buttons</h3>
           <div className={styles.buttonsGrid}>
-            <div className={styles.button88x31}>next.js</div>
-            <div className={styles.button88x31}>react</div>
-            <div className={styles.button88x31}>typescript</div>
-            <div className={styles.button88x31}>dotnet</div>
-            <div className={styles.button88x31}>csharp</div>
-            <div className={styles.button88x31}>vscode</div>
-            <div className={styles.button88x31}>linux</div>
-            <div className={styles.button88x31}>github</div>
-            <div className={styles.button88x31}>brazil</div>
-            <div className={styles.button88x31}>coffee</div>
-            <div className={styles.button88x31}>neovim</div>
-            <div className={styles.button88x31}>docker</div>
-            <div className={styles.button88x31}>azure</div>
-            <div className={styles.button88x31}>vercel</div>
-            <div className={styles.button88x31}>postgres</div>
-            <div className={styles.button88x31}>redis</div>
+            {(() => {
+              const urlMap: Record<string, string> = {
+                'blahaj.png': 'https://pt.aliexpress.com/item/1005006748783518.html',
+                'aphex.png': 'https://open.spotify.com/intl-pt/album/7aNclGRxTysfh6z0d8671k',
+                'ayanami.png': 'https://evangelion.fandom.com/wiki/Rei_Ayanami',
+                'clubp.png':'https://play.cpavalanche.net/',
+                'adhd.gif': '/portfolio',
+                'dnf.gif':'https://docs.fedoraproject.org/pt_BR/quick-docs/dnf/',
+                'blahaj2.gif': 'https://pt.aliexpress.com/item/1005006748783518.html',
+                'fedora.gif': 'https://fedoraproject.org',
+                'kde.gif': 'https://kde.org',
+                'keepthewebfree.gif': 'https://yesterweb.org/no-to-web3/',
+                'mine.png':'minecraft.net',
+                'mullvad.png':'https://mullvad.net/',
+                'nyan':'https://www.nyan.cat/index.php?cat=original',
+                'noweb3.gif': 'https://yesterweb.org/no-to-web3/',
+                'social.gif':'https://stallman.org/facebook.html'
+              };
+
+              return buttonImages.map((file) => {
+                const name = file.replace(/\.[^.]+$/, '');
+                const href = urlMap[file] ?? `https://www.google.com/search?q=${encodeURIComponent(name)}`;
+                return (
+                  <a key={file} href={href} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={`/buttons/${file}`}
+                      alt={name}
+                      className={styles.button88x31}
+                    />
+                  </a>
+                );
+              });
+            })()}
           </div>
         </section>
 
-        {/* Blog Section */}
         <section id="blog" className={styles.blogSection}>
           <h2 className={styles.buttonsTitle} style={{ textAlign: 'center', marginBottom: '3rem' }}>Writing</h2>
 
