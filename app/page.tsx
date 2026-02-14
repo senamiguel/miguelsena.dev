@@ -19,7 +19,7 @@ export default async function Home() {
 
         <section className={styles.intro}>
           <p>
-            Hi, thanks for stopping by. I am Miguel, and I make things on the internet. This is my personal web site on the world wide web. 🐈
+           Hi. I&apos;m Miguel. I build things for the internet. Sometimes useful. Sometimes weird. This is my corner of the web.
           </p>
         </section>
 
@@ -75,21 +75,20 @@ export default async function Home() {
             <h3 className={styles.columnTitle}>Contact</h3>
             <ul className={styles.list}>
               <li className={styles.listItem}>
-                <span className={styles.year}>Mail:</span>
-                <a href="mailto:miguelaugustosena@gmail.com" className={styles.link}>miguel@example.com</a>
+                <div className={styles.contactText}>
+                  <p>Email is the best way to reach me.</p>
+                  <p>Encrypted emails using my PGP key are appreciated.</p>
+                  <p>I might reply fast. I might reply in three days. But, probably I&apos;ll reply.</p>
+                  <p>
+                    <a href="mailto:miguel@miguelsena.dev" className={styles.link}>miguel@miguelsena.dev</a>
+                  </p>
+                </div>
               </li>
               <li className={styles.listItem}>
                 <span className={styles.year}>PGP:</span>
-                <a className={styles.link}>Key</a>
+                <a className={styles.link} href="public.asc">Key</a>
               </li>
-              <li className={styles.listItem}>
-                <span className={styles.year}>Matrix:</span>
-                <span style={{ color: '#ccc' }}>@miguel:matrix.org</span>
-              </li>
-              <li className={styles.listItem}>
-                <span className={styles.year} style={{ width: 'auto' }}>Fediverse:</span>
-                <a href="#" className={styles.link}>@miguel@social.instance</a>
-              </li>
+
             </ul>
           </div>
         </div>
@@ -111,7 +110,7 @@ export default async function Home() {
                 'keepthewebfree.gif': 'https://yesterweb.org/no-to-web3/',
                 'mine.png':'minecraft.net',
                 'mullvad.png':'https://mullvad.net/',
-                'nyan':'https://www.nyan.cat/index.php?cat=original',
+                'nyan.gif':'https://www.nyan.cat/index.php?cat=original',
                 'noweb3.gif': 'https://yesterweb.org/no-to-web3/',
                 'social.gif':'https://stallman.org/facebook.html'
               };
@@ -165,6 +164,9 @@ export default async function Home() {
             <br />
             &copy; {new Date().getFullYear()} Miguel Sena. copyleft.
           </p>
+          <div style={{ marginTop: '0.5rem' }}>
+            <img src="https://counter.matdoes.dev/" alt="visitor counter" style={{ height: 18 }} />
+          </div>
         </footer>
       </main>
     </div>

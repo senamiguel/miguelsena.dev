@@ -124,6 +124,22 @@
   /* Or center on mobile */
 }
 
+.contactText {
+  flex: 1 1 auto;
+  min-width: 0; /* allow proper text wrapping inside flex */
+}
+
+.contactText p {
+  margin: 0 0 0.35rem 0;
+  line-height: 1.4;
+  color: #cfe6df;
+}
+
+.contactText .link {
+  display: inline-block;
+  margin-top: 0.35rem;
+}
+
 /* Center list items on mobile if grid is centered */
 @media (max-width: 768px) {
   .listItem {

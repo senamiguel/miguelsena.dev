@@ -383,10 +383,15 @@ registerCommand('whoami', (args, ctx) => {
 });
 
 registerCommand('date', (args, ctx) => {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const day = pad(now.getDate());
+  const month = pad(now.getMonth() + 1);
+  const year = now.getFullYear();
   return {
     output: tr(ctx,
-      "Current date is: 11-13-2025\n(Time is an illusion in DOS) ⏰",
-      "Data atual: 13-11-2025\n(O tempo e uma ilusao no DOS) ⏰"
+      `Current date is: ${month}-${day}-${year}\n(Time is an illusion in DOS) ⏰`,
+      `Data atual: ${day}-${month}-${year}\n(O tempo e uma ilusao no DOS) ⏰`
     )
   };
 });
@@ -639,10 +644,15 @@ registerCommand('whoami', (args, ctx) => {
 });
 
 registerCommand('date', (args, ctx) => {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const day = pad(now.getDate());
+  const month = pad(now.getMonth() + 1);
+  const year = now.getFullYear();
   return {
     output: tr(ctx,
-      "Current date is: 11-13-2025\n(Time is an illusion in DOS) ⏰",
-      "Data atual: 13-11-2025\n(O tempo e uma ilusao no DOS) ⏰"
+      `Current date is: ${month}-${day}-${year}\n(Time is an illusion in DOS) ⏰`,
+      `Data atual: ${day}-${month}-${year}\n(O tempo e uma ilusao no DOS) ⏰`
     )
   };
 });
@@ -867,10 +877,15 @@ registerCommand('whoami', (args, ctx) => {
 });
 
 registerCommand('date', (args, ctx) => {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const day = pad(now.getDate());
+  const month = pad(now.getMonth() + 1);
+  const year = now.getFullYear();
   return {
     output: tr(ctx,
-      "Current date is: 11-13-2025\n(Time is an illusion in DOS) ⏰",
-      "Data atual: 13-11-2025\n(O tempo e uma ilusao no DOS) ⏰"
+      `Current date is: ${month}-${day}-${year}\n(Time is an illusion in DOS) ⏰`,
+      `Data atual: ${day}-${month}-${year}\n(O tempo e uma ilusao no DOS) ⏰`
     )
   };
 });
