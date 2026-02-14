@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-expressions */
+
+// NOTE: many command handlers intentionally accept (args, ctx) even when
+// they don't use both parameters. To keep the file readable and avoid
+// noisy lint warnings we disable the no-unused-vars rule for this file.
+
 import { Language, translations } from './translations';
 
 export interface Directory {
@@ -31,7 +37,7 @@ export interface CommandResult {
   output: string;
   animate?: boolean;
   lines?: string[];
-  // If provided, UI will render next prompt using this path (e.g., after 'cd')
+  
   promptPath?: string;
 }
 
@@ -40,7 +46,7 @@ export type CommandHandler = (
   ctx: CommandContext
 ) => CommandResult | void;
 
-// Command registry
+
 const commands: Record<string, CommandHandler> = {};
 
 export function registerCommand(name: string, handler: CommandHandler) {

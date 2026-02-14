@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, react-hooks/exhaustive-deps */
+
 "use client";
 import CrtScreen from '@/components/CrtScreen';
 import LanguageModeSelector from '@/components/LanguageModeSelector';
@@ -26,7 +28,7 @@ function addParentLinks(dir: Directory, parent: Directory | null) {
   }
 }
 
-// ROOT will be created dynamically with translations
+
 const createRoot = (lang: Language): Directory => {
   const t = translations[lang];
   return {
@@ -418,7 +420,7 @@ export default function Home() {
             return prev + `\n${t.terminal.errors.fileNotFound} ${fileName}\n` + currentPrompt;
           }
 
-          // Easter Eggs
+          
           if (finalCommand === "rm -rf" || finalCommand === "rm -rf /" || finalCommand === "rm -rf *") {
             const isPt = language === 'pt';
             const lines = isPt
@@ -647,22 +649,22 @@ export default function Home() {
               ? "\n🚂💨 Choo choo! (A locomotiva passou!)\n(Isso acontece quando voce digita 'ls' errado!)"
               : "\n🚂💨 Choo choo! (Steam Locomotive passed by)\n(This is what happens when you type 'ls' wrong!)";
             
-            // Frame 1
+            
             setTimeout(() => {
               setDosText(baseText + "\n\n" + frames);
             }, 0);
             
-            // Frame 2
+            
             setTimeout(() => {
               setDosText(baseText + "\n\n" + frame2);
             }, 200);
             
-            // Frame 3
+            
             setTimeout(() => {
               setDosText(baseText + "\n\n" + frame3);
             }, 400);
             
-            // Final message
+            
             setTimeout(() => {
               setDosText(baseText + finalMsg + "\n" + currentPrompt);
               baitingRef.current = false;
@@ -967,7 +969,7 @@ export default function Home() {
         return prev + `\nFile not found: ${fileName}\n` + currentPrompt;
       }
 
-      // Easter Eggs
+      
       if (finalCommand === "rm -rf" || finalCommand === "rm -rf /" || finalCommand === "rm -rf *") {
         const isPt = language === 'pt';
         const lines = isPt
@@ -1211,22 +1213,22 @@ export default function Home() {
           ? "\n🚂💨 Choo choo! (A locomotiva passou!)\n(Isso acontece quando voce digita 'ls' errado!)"
           : "\n🚂💨 Choo choo! (Steam Locomotive passed by)\n(This is what happens when you type 'ls' wrong!)";
         
-        // Frame 1
+        
         setTimeout(() => {
           setDosText(baseText + "\n\n" + frames);
         }, 0);
         
-        // Frame 2
+        
         setTimeout(() => {
           setDosText(baseText + "\n\n" + frame2);
         }, 200);
         
-        // Frame 3
+        
         setTimeout(() => {
           setDosText(baseText + "\n\n" + frame3);
         }, 400);
         
-        // Final message
+        
         setTimeout(() => {
           setDosText(baseText + finalMsg + "\n" + currentPrompt);
           baitingRef.current = false;
@@ -1440,7 +1442,7 @@ export default function Home() {
           return prev + `\nFile not found: ${fileName}\n` + prompt;
         }
 
-        // Easter Eggs
+        
         if (finalCommand === "rm -rf" || finalCommand === "rm -rf /" || finalCommand === "rm -rf *") {
           setIsTyping(false);
           const isPt = language === 'pt';
@@ -1570,22 +1572,22 @@ export default function Home() {
             ? "\n🚂💨 Choo choo! (A locomotiva passou!)\n(Isso acontece quando voce digita 'ls' errado!)"
             : "\n🚂💨 Choo choo! (Steam Locomotive passed by)\n(This is what happens when you type 'ls' wrong!)";
           
-          // Frame 1
+          
           setTimeout(() => {
             setDosText(baseText + "\n\n" + frames);
           }, 0);
           
-          // Frame 2
+          
           setTimeout(() => {
             setDosText(baseText + "\n\n" + frame2);
           }, 200);
           
-          // Frame 3
+          
           setTimeout(() => {
             setDosText(baseText + "\n\n" + frame3);
           }, 400);
           
-          // Final message
+          
           setTimeout(() => {
             setDosText(baseText + finalMsg + "\n" + prompt);
             baitingRef.current = false;

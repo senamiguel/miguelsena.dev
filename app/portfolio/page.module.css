@@ -98,7 +98,6 @@ a.secondary {
   border-color: var(--button-secondary-border);
 }
 
-/* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   a.primary:hover {
     background: var(--button-primary-hover);
@@ -177,7 +176,6 @@ a.secondary {
   overflow: hidden;
 }
 
-/* subtle top highlight */
 .homeButton::before {
   content: "";
   position: absolute;
@@ -219,7 +217,6 @@ a.secondary {
   align-items: stretch;
 }
 
-/* remove heavy scanline overlay for cleaner look */
 .mobileButtons::before { display: none; }
 
 .mobileButtons > * {
@@ -243,7 +240,6 @@ a.secondary {
   white-space: nowrap;
   position: relative;
 }
-/* clean look: remove scanline overlays */
 .commandButton::before,
 .commandButton::after { display: none; }
 

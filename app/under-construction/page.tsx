@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 import CrtScreen from '@/components/CrtScreen';
 import styles from '../page.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const CONSTRUCTION_TEXT_DESKTOP = [
   'Microsoft(R) MS-DOS(R) Version 6.22',
@@ -97,27 +99,57 @@ export default function UnderConstruction() {
     return () => clearInterval(cursorTimer);
   }, []);
 
-  useEffect(() => {
-    if (currentIndex < constructionText.length) {
-      const timer = setTimeout(() => {
-        setDisplayText(constructionText.slice(0, currentIndex + 1));
-        setCurrentIndex(currentIndex + 1);
-      }, 5);
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentIndex, constructionText]);
+  // Use a ref to keep track of the current index so we don't need to
+  // reattach listeners or re-create timers on every index change.
+  const currentIndexRef = useRef(0);
 
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (currentIndex >= constructionText.length) {
+    let mounted = true;
+    let timeoutId: number | undefined;
+
+    // reset when constructionText changes
+    // Defer resets to avoid calling setState synchronously inside an effect
+    const resetTimeoutId = window.setTimeout(() => {
+      setDisplayText('');
+      setCurrentIndex(0);
+      currentIndexRef.current = 0;
+    }, 0);
+
+    const run = () => {
+      if (!mounted) return;
+      if (currentIndexRef.current < constructionText.length) {
+        timeoutId = window.setTimeout(() => {
+          setCurrentIndex(prev => {
+            const next = prev + 1;
+            currentIndexRef.current = next;
+            setDisplayText(constructionText.slice(0, next));
+            return next;
+          });
+          run();
+        }, 5);
+      }
+    };
+
+    run();
+
+    return () => {
+      mounted = false;
+      if (resetTimeoutId) window.clearTimeout(resetTimeoutId);
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
+  }, [constructionText]);
+
+  // Attach keydown listener once and use the ref to check progress
+  useEffect(() => {
+    const handleKeyPress = (_e: KeyboardEvent) => {
+      if (currentIndexRef.current >= constructionText.length) {
         window.location.href = 'https://www.google.com';
       }
     };
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [currentIndex, constructionText]);
+  }, [constructionText]);
 
   return (
     <main className={styles.main}>

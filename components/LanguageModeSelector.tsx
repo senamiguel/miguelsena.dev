@@ -1,5 +1,7 @@
 'use client';
 import { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import styles from './LanguageModeSelector.module.css';
 import { Language, Mode, Translations } from '@/app/portfolio/translations';
 

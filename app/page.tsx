@@ -1,5 +1,6 @@
 import styles from './page.module.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getButtonImages } from './getButtonImages';
 
 export default async function Home() {
@@ -12,9 +13,9 @@ export default async function Home() {
 
       <main className={styles.main}>
         <header className={styles.headerContainer}>
-          <img src="/sparkles.gif" alt="" className={styles.sparkle} />
+          <Image src="/sparkles.gif" alt="" className={styles.sparkle} width={64} height={24} unoptimized={true} />
           <h1 className={styles.headerTitle}>welcome to Miguel&apos;s site!!!</h1>
-          <img src="/sparkles.gif" alt="" className={styles.sparkle} />
+          <Image src="/sparkles.gif" alt="" className={styles.sparkle} width={64} height={24} />
         </header>
 
         <section className={styles.intro}>
@@ -120,10 +121,13 @@ export default async function Home() {
                 const href = urlMap[file] ?? `https://www.google.com/search?q=${encodeURIComponent(name)}`;
                 return (
                   <a key={file} href={href} target="_blank" rel="noopener noreferrer">
-                    <img
+                    <Image
                       src={`/buttons/${file}`}
                       alt={name}
                       className={styles.button88x31}
+                      width={88}
+                      height={31}
+                      unoptimized={file.toLowerCase().endsWith('.gif')}
                     />
                   </a>
                 );
@@ -164,9 +168,10 @@ export default async function Home() {
             <br />
             &copy; {new Date().getFullYear()} Miguel Sena. copyleft.
           </p>
-          <div style={{ marginTop: '0.5rem' }}>
-            <img src="https://counter.matdoes.dev/" alt="visitor counter" style={{ height: 18 }} />
-          </div>
+            <div style={{ marginTop: '0.5rem' }}>
+              {/* external counter — keep native img to avoid remotePatterns config */}
+              <img src="https://counter.matdoes.dev/" alt="visitor counter" style={{ height: 18 }} />
+            </div>
         </footer>
       </main>
     </div>

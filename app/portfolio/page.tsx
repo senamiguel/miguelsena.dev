@@ -2,9 +2,9 @@
 import CrtScreen from '@/components/CrtScreen';
 import LanguageModeSelector from '@/components/LanguageModeSelector';
 import styles from './page.module.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Language, Mode, translations } from './translations';
-import { executeCommand, Directory, FileSystemNode, getCommandNames, CommandResult } from './commands';
+import { executeCommand, Directory, getCommandNames, CommandResult } from './commands';
 
 function addParentLinks(dir: Directory, parent: Directory | null) {
   dir.parent = parent ? parent : undefined;
@@ -595,12 +595,7 @@ export default function Home() {
   const [basePrefix, setBasePrefix] = useState<string>('');
   const [suggestionMode, setSuggestionMode] = useState<'command'|'arg'|null>(null);
   // Static subcommand sets for git & npm (first token after command)
-  const gitSubs = [
-    'status','log','commit','push','pull','branch','checkout','merge','stash','revert','reset','diff','tag','init','clone','add'
-  ];
-  const npmSubs = [
-    'install','i','ci','run','start','build','test','publish','outdated','update','audit','cache','prune','init'
-  ];
+  
 
   const [showCursor, setShowCursor] = useState(false);
   const [dosText, setDosText] = useState('');
@@ -610,7 +605,7 @@ export default function Home() {
 
   // Helper: progressively append lines to the CRT, then reprint the prompt
   const baitingRef = useRef(false);
-  const animateLines = (lines: string[], prompt: string, step = 300) => {
+  const animateLines = useCallback((lines: string[], prompt: string, step = 300) => {
     if (baitingRef.current) return;
     baitingRef.current = true;
     lines.forEach((line, idx) => {
@@ -622,7 +617,8 @@ export default function Home() {
       setDosText(prev => prev + '\n' + prompt);
       baitingRef.current = false;
     }, lines.length * step + 50);
-  };
+  }, [setDosText]);
+  
 
   const handleLanguageModeSelect = (lang: Language, selectedMode: Mode) => {
     setLanguage(lang);
@@ -679,7 +675,7 @@ export default function Home() {
     ].join('\n');
   };
 
-  const processCommand = (commandLine: string) => {
+  const processCommand = useCallback((commandLine: string) => {
     if (!currentDir || !language || !mode) return;
 
     // Special handling for 'sl' command with animation
@@ -771,7 +767,9 @@ export default function Home() {
     });
 
     setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
-  };
+  }, [currentDir, language, mode, currentPrompt, dosText, animateLines, setCurrentDir, setShowAboutImage, setDosText]);
+
+  
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -792,6 +790,14 @@ export default function Home() {
 
   useEffect(() => {
     if (!language || !mode || !currentDir || !mounted) return;
+
+    // static subcommand sets for git & npm (first token after command)
+    const gitSubs = [
+      'status','log','commit','push','pull','branch','checkout','merge','stash','revert','reset','diff','tag','init','clone','add'
+    ];
+    const npmSubs = [
+      'install','i','ci','run','start','build','test','publish','outdated','update','audit','cache','prune','init'
+    ];
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)) {
@@ -816,7 +822,7 @@ export default function Home() {
           setCommandHistory(prev => [...prev, finalCommand]);
         }
         setHistoryIndex(-1);
-        processCommand(finalCommand);
+  processCommand(finalCommand);
         return;
       }
 
@@ -986,7 +992,7 @@ export default function Home() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [dosText, currentDir, commandHistory, historyIndex, language, mode, mounted, currentPrompt, autoSuggestions, autoCycleIndex, basePrefix, suggestionMode]);
+  }, [dosText, currentDir, commandHistory, historyIndex, language, mode, mounted, currentPrompt, autoSuggestions, autoCycleIndex, basePrefix, suggestionMode, processCommand]);
 
   const typeCommand = (command: string) => {
     if (isTyping || !currentDir || !language) return;
@@ -1013,7 +1019,7 @@ export default function Home() {
         setCommandHistory(prev => [...prev, finalCommand]);
       }
       setHistoryIndex(-1);
-      processCommand(finalCommand);
+  processCommand(finalCommand);
       setIsTyping(false);
     }, totalDelay + 200);
   };

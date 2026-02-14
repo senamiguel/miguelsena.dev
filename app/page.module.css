@@ -25,8 +25,7 @@
 .main {
   max-width: 900px;
   margin: 0 auto;
-  padding: 1rem 2rem;
-  position: relative;
+  padding: 4rem 2rem 1rem 2rem;   position: relative;
   z-index: 10;
 }
 
@@ -108,7 +107,6 @@
   text-shadow: 0 0 6px rgba(0,0,0,0.6);
 }
 
-/* Li Links */
 .list {
   list-style: none;
   padding: 0;
@@ -119,15 +117,12 @@
   margin-bottom: 0.8rem;
   font-size: 1rem;
   display: flex;
-  /* Helps align year and link */
-  justify-content: flex-start;
-  /* Or center on mobile */
-}
+    justify-content: flex-start;
+  }
 
 .contactText {
   flex: 1 1 auto;
-  min-width: 0; /* allow proper text wrapping inside flex */
-}
+  min-width: 0; }
 
 .contactText p {
   margin: 0 0 0.35rem 0;
@@ -140,7 +135,6 @@
   margin-top: 0.35rem;
 }
 
-/* Center list items on mobile if grid is centered */
 @media (max-width: 768px) {
   .listItem {
     justify-content: center;
@@ -167,7 +161,6 @@
   font-size: 0.9rem;
 }
 
-/* Buttons Section */
 .buttonsSection {
   text-align: center;
   margin-bottom: 5rem;
@@ -212,13 +205,11 @@
 }
 
 
-/* Blog Section */
 .blogSection {
   border-top: 1px dashed #333;
   padding-top: 3rem;
 }
 
-/* Use a generic header style for blog title too if needed, but matdoes.dev is clean */
 
 .post {
   margin-bottom: 2.5rem;
@@ -243,7 +234,6 @@
   font-size: 1rem;
 }
 
-/* Effects */
 .scanlines {
   position: fixed;
   top: 0;
@@ -260,8 +250,7 @@
   z-index: 5;
   opacity: 0.1;
   animation: scanlines 0.2s linear infinite;
-  /* Faster flicker for authenticity? Or keep standard */
-}
+  }
 
 @keyframes scanlines {
   0% {
@@ -285,7 +274,6 @@
   z-index: 0;
 }
 
-/* Footer */
 .footer {
   text-align: center;
   margin-top: 4rem;
