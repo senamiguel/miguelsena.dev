@@ -2,6 +2,7 @@ import styles from './page.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getButtonImages } from './getButtonImages';
+import Win95Player from '../components/Win95Player';
 
 export default async function Home() {
   const buttonImages = getButtonImages();
@@ -23,6 +24,10 @@ export default async function Home() {
            Hi. I&apos;m Miguel. I build things for the internet. Sometimes useful. Sometimes weird. This is my corner of the web.
           </p>
         </section>
+
+        <div style={{ margin: '1.5rem 0' }}>
+          <Win95Player />
+        </div>
 
         <div className={styles.grid}>
           <div className={styles.column}>
