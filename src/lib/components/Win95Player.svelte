@@ -408,7 +408,12 @@
     currentState = Amplitude.getPlayerState();
   }
   const handlePrev = () =>{
-    Amplitude?.prev();
+    if(Amplitude.getSongPlayedSeconds() > 5 || currentSongIndex == 0){
+      Amplitude.skipTo(0, Amplitude.getActiveIndex());
+    }
+    else{
+      Amplitude?.prev();
+    }
   }
   function formatMinutesSeconds(totalSeconds) {
       const minutes = Math.floor(totalSeconds / 60);
