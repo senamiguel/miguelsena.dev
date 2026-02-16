@@ -4,12 +4,14 @@
   src: url("/fonts/Comic_Sans_MS.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: "AtkinsonHyperlegible-Regular";
   src: url("/fonts/AtkinsonHyperlegible-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 @theme {
   --font-comic: "Comic_Sans_MS", cursive;

@@ -336,52 +336,100 @@
   </div>
   <div class="card-body">
     <div class="player-display">
-      <span class="track-name">Darude-Sandstorm.wav</span>
-      <span class="track-time">00:42 / 03:53</span>
+      <span class="track-name">{songs[currentSongIndex].name}.mp3</span>
+      <span class="track-time">{currentDuration[0]}:{currentDuration[1]} / {trackDuration[0]}:{trackDuration[1]}</span>
     </div>
     <div class="player-progress">
       <div class="progress-fill"></div>
       <div class="progress-thumb"></div>
     </div>
     <div class="player-controls">
-      <button class="ctrl-btn ctrl-prev" aria-label="previous"></button>
+      <button class="ctrl-btn ctrl-prev" aria-label="previous" on:click={handlePrev}></button>
       <button class="ctrl-btn ctrl-play" aria-label="play" on:click={handlePlay}></button>
       <button class="ctrl-btn ctrl-stop" aria-label="stop" on:click={handleStop}></button>
-      <button class="ctrl-btn ctrl-next" aria-label="next"></button>
+      <button class="ctrl-btn ctrl-next" aria-label="next" on:click={handleNext}></button>
     </div>
   </div>
   <div class="card-statusbar">
-    <span class="status-text">Playing</span>
+    <span class="status-text">{currentState}</span>
     <span class="status-vol">Vol: 75%</span>
   </div>
 </div>
 
 <script>
   import { onMount } from 'svelte';
-  const state = 0
-  let Amplitude
-  onMount(async () => {
-    Amplitude = (await import('amplitudejs')).default;
-    Amplitude.init({
-      songs: [
-        {
+  const STATES = {
+    PLAYING: 'playing',
+    PAUSED: 'paused',
+    STOPPED: 'stopped'
+  };
+  const songs = [{
           "name": "Xtal",
           "artist": "Aphex Twin",
           "url": "https://dn720309.ca.archive.org/0/items/selected-ambient-works-85-92-flac/01.%20Aphex%20Twin%20-%20Xtal.mp3"
-        }
-      ]});
-  });
+        },
+        {
+          "name": "Tha",
+          "artist": "Aphex Twin",
+          "url": "https://ia800800.us.archive.org/8/items/selected-ambient-works-85-92-flac/02.%20Aphex%20Twin%20-%20Tha.mp3"
+        },
+        {
+          "name": "Aria Math",
+          "artist": "C418",
+          "url": "https://archive.org/download/minecraft-volume-beta/Minecraft%20Volume%20Beta%2F13.%20Aria%20Math.mp3"
+        },
+        {
+          "name": "The great gig in the sky",
+          "artist": "Pink Floyd",
+          "url": "https://shell.lug.mtu.edu/~dane/files/The%20Dark%20Side%20Of%20The%20Moon/05%20-%20Pink%20Floyd%20-%20The%20Great%20Gig%20in%20the%20Sky%20%282023%20Remaster%29.flac"
+        }];
+  let Amplitude;
+  let currentState = STATES.STOPPED;
+  let currentSongIndex = 0;
+  let currentDuration = ['0'.padStart(2,'0'),'0'.padStart(2,'0')];
+  let trackDuration = ['0'.padStart(2,'0'),'0'.padStart(2,'0')];
 
-  function handlePlay(){
-    if (!Amplitude){
-      handlePlay();
+  const handlePlay = () =>{
+    if (currentState == STATES.PLAYING){
+      Amplitude?.pause();
+      currentState = Amplitude.getPlayerState()
     }
-    Amplitude.play();
+    else{
+      Amplitude?.play();
+      currentState = Amplitude.getPlayerState();
+    }
   }
-  function handleStop(){
-  if (!Amplitude){
-    handleStop();
+  const handleStop = () =>{
+    Amplitude?.stop();
+    currentState = Amplitude.getPlayerState();
   }
-  Amplitude.stop();
-}
+  const handleNext = () =>{
+    Amplitude?.next();
+    currentState = Amplitude.getPlayerState();
+  }
+  const handlePrev = () =>{
+    Amplitude?.prev();
+  }
+  function formatMinutesSeconds(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = Math.floor(totalSeconds % 60);
+      const formattedMinutes = String(minutes).padStart(2, '0');
+      const formattedSeconds = String(seconds).padStart(2, '0');  
+      return [formattedMinutes, formattedSeconds];
+  }
+  onMount(async () => {
+    Amplitude = (await import('amplitudejs')).default;
+        Amplitude.init({
+          songs, callbacks: {
+            loadeddata: function(){
+              currentSongIndex = Amplitude.getActiveIndex();
+              trackDuration = formatMinutesSeconds(Amplitude.getSongDuration());
+            },
+            timeupdate: function(){
+              currentDuration = formatMinutesSeconds(Amplitude.getSongPlayedSeconds());
+            }
+          }
+        })
+    });
+
 </script>
