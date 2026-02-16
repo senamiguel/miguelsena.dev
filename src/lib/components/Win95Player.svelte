@@ -318,6 +318,23 @@
     var(--card-border-light) var(--card-border-dark);
   color: var(--card-text);
 }
+.ctrl-pause::after,
+.ctrl-pause::before{
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0.18em;
+  height: 0.6em;
+  background: var(--card-text);
+  transform: translate(-50%, -50%);
+  border: none;
+}
+.ctrl-pause::before {
+  left: 40%;
+}
+.ctrl-pause::after {
+  left: 60%;
+}
 </style>
 
 <div class="win95-card cursor-grab">
@@ -345,7 +362,7 @@
     </div>
     <div class="player-controls">
       <button class="ctrl-btn ctrl-prev" aria-label="previous" on:click={handlePrev}></button>
-      <button class="ctrl-btn ctrl-play" aria-label="play" on:click={handlePlay}></button>
+      <button class="ctrl-btn ctrl-{currentIcon}" aria-label="play" on:click={handlePlay}></button>
       <button class="ctrl-btn ctrl-stop" aria-label="stop" on:click={handleStop}></button>
       <button class="ctrl-btn ctrl-next" aria-label="next" on:click={handleNext}></button>
     </div>
@@ -388,20 +405,24 @@
   let currentSongIndex = 0;
   let currentDuration = ['0'.padStart(2,'0'),'0'.padStart(2,'0')];
   let trackDuration = ['0'.padStart(2,'0'),'0'.padStart(2,'0')];
-
+  let icon = ['play','pause'];
+  let currentIcon = icon[0];
+  const setCurrentState = () =>{
+    currentIcon = ((currentState = Amplitude.getPlayerState()) === STATES.PLAYING) ? icon[1] : icon[0];  
+  }
   const handlePlay = () =>{
     if (currentState == STATES.PLAYING){
       Amplitude?.pause();
-      currentState = Amplitude.getPlayerState()
     }
     else{
       Amplitude?.play();
       currentState = Amplitude.getPlayerState();
     }
+    setCurrentState();
   }
   const handleStop = () =>{
     Amplitude?.stop();
-    currentState = Amplitude.getPlayerState();
+    setCurrentState();
   }
   const handleNext = () =>{
     Amplitude?.next();
@@ -415,12 +436,15 @@
       Amplitude?.prev();
     }
   }
-  function formatMinutesSeconds(totalSeconds) {
+  const formatMinutesSeconds = (totalSeconds) =>{
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = Math.floor(totalSeconds % 60);
       const formattedMinutes = String(minutes).padStart(2, '0');
       const formattedSeconds = String(seconds).padStart(2, '0');  
       return [formattedMinutes, formattedSeconds];
+  }
+  const changePlayIcon = () =>{
+
   }
   onMount(async () => {
     Amplitude = (await import('amplitudejs')).default;
