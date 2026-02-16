@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@font-face {
+  font-family: "Comic_Sans_MS";
+  src: url("/fonts/Comic_Sans_MS.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "AtkinsonHyperlegible-Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@theme {
+  --font-comic: "Comic_Sans_MS", cursive;
+  --font-legible: "AtkinsonHyperlegible-Regular", sans-serif;
+}
+:root {
+  --bg-color: #07100a;
+  --accent: #0dc7f9;
+  --muted: #9aa39a;
+  --card-bg: rgba(0,0,0,0.22);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  color: #e6efe6;
+  font-family: var(--font-atkinson), sans-serif;
+  position: relative;
+  background-color: #000;
+}
+
+body::before {
+  display: none;
+}
+
+
