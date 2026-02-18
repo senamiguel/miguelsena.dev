@@ -337,8 +337,8 @@
   }
   </style>
 
-  <div class="win95-card cursor-grab">
-    <div class="card-titlebar">
+  <div use:draggable class="win95-card cursor-grab absolute z-50" style="transform: translate({x}px, {y}px);">
+    <div class="card-titlebar" on:drag={window.alert("oi")} role="dialog" tabindex="">
       <span class="card-title-text">Media Player - My fav songs </span>
       <div class="card-controls">
         <button class="card-btn card-btn-min" aria-label="minimize"></button>
@@ -418,6 +418,8 @@
     let trackDuration = ['0'.padStart(2,'0'),'0'.padStart(2,'0')];
     let icon = ['play','pause'];
     let currentIcon = icon[0];
+    let x = 0;
+    let y = 400;
     const setCurrentState = () =>{
       currentIcon = ((currentState = Amplitude.getPlayerState()) === STATES.PLAYING) ? icon[1] : icon[0];  
     }
@@ -464,6 +466,32 @@
       const ratio = Math.max(0, Math.min(1, x / width));
       currentPercentage = ratio * 100;
       Amplitude.setSongPlayedPercentage(currentPercentage);
+    }
+    function draggable(node) {
+      let startX;
+      let startY;
+      const handlePointerDown = (event)=> {
+        event.preventDefault();
+        startX = event.clientX - x;
+        startY = event.clientY - y;
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', handlePointerUp);
+      }
+
+      function handlePointerMove(event) {
+        x = event.clientX - startX;
+        y = event.clientY - startY;
+      }
+      function handlePointerUp() {
+        window.removeEventListener('pointermove', handlePointerMove);
+        window.removeEventListener('pointerup', handlePointerUp);
+      }
+      node.addEventListener('pointerdown', handlePointerDown);
+      return {
+        destroy() {
+          node.removeEventListener('pointerdown', handlePointerDown);
+        }
+      }
     }
     onMount(async () => {
       Amplitude = (await import('amplitudejs')).default;
