@@ -3,8 +3,8 @@ FROM oven/bun:latest
 WORKDIR /app
 
 # Install dependencies first (for faster caching)
-COPY package.json bun.lockb ./
-RUN bun install && bun install -D @sveltejs/adapter-bun
+COPY package.json bun.lock ./
+RUN bun install && bun install -D svelte-adapter-bun
 
 # Copy all source files and build
 COPY . .
