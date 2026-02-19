@@ -364,8 +364,7 @@
         aria-valuemax="100" 
         aria-valuenow={currentPercentage} 
         aria-label="Controle de progresso"
-        on:click={changeProgress} 
-        on:keydown={handleSeekKey}
+        on:click={changeProgress}
       >
         <div class="progress-fill" style="width: {!currentPercentage ? 0 : currentPercentage}%;"></div>
         <div class="progress-thumb" style="left: {!currentPercentage ? 0 : currentPercentage}%;"></div>
