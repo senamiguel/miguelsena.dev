@@ -734,33 +734,79 @@
         return html;
     }
 
-    function handlePublish() {
+    async function handlePublish() {
         if (!isReady) return;
-        // In a real app, this would send to an API
+        
+        const adminKey = prompt("Please enter your Admin API Key to publish:");
+        if (!adminKey) return;
+
+        const slug = title.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''); 
         const postData = {
             title: title.trim(),
-            content: content.trim(),
-            excerpt: excerpt.trim(),
-            category,
-            tags,
-
-            createdAt: new Date().toISOString()
+            slug: slug,
+            content: markdownToHtml(content.trim()), 
+            published: true
         };
-        console.log('Publishing post:', postData);
-        alert('Post published successfully! (demo)');
+
+        try {
+            const API_URL = import.meta.env.VITE_PUBLIC_API_URL || 'http://127.0.0.1:3000';
+            const res = await fetch(`${API_URL}/api/posts/admin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': adminKey
+                },
+                body: JSON.stringify(postData)
+            });
+
+            if (res.ok) {
+                alert('Post published successfully to the API!');
+                window.location.href = `/#blog`;
+            } else {
+                const err = await res.json();
+                alert(`Error: ${err.error || err.message || JSON.stringify(err)}`);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Fatal error connecting to the API');
+        }
     }
 
-    function handleSaveDraft() {
+    async function handleSaveDraft() {
+        if (!title.trim() || !content.trim()) return alert("Fill title and content first!");
+
+        const adminKey = prompt("Please enter your Admin API Key to save draft:");
+        if (!adminKey) return;
+        
+        const slug = title.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''); 
+        
         const draftData = {
             title: title.trim(),
-            content: content.trim(),
-            excerpt: excerpt.trim(),
-            category,
-            tags,
-            savedAt: new Date().toISOString()
+            slug: slug,
+            content: markdownToHtml(content.trim()),
+            published: false // <--- Important field matching your SQLite API
         };
-        console.log('Draft saved:', draftData);
-        alert('Draft saved! (demo)');
+
+        try {
+            const API_URL = import.meta.env.VITE_PUBLIC_API_URL || 'http://127.0.0.1:3000';
+            const res = await fetch(`${API_URL}/api/posts/admin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': adminKey
+                },
+                body: JSON.stringify(draftData)
+            });
+
+            if (res.ok) {
+                alert('Draft saved to database! It will not appear on the public feed.');
+            } else {
+                const err = await res.json();
+                alert(`Error from API: ${err.error || JSON.stringify(err)}`);
+            }
+        } catch (e) {
+            alert('Connection Failed');
+        }
     }
 </script>
 
