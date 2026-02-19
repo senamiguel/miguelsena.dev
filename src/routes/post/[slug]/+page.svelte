@@ -249,13 +249,6 @@
         background: linear-gradient(90deg, transparent, #333, transparent);
     }
 
-    .separatorDots {
-        font-family: var(--font-geist-mono), monospace;
-        font-size: 0.8rem;
-        color: #555;
-        letter-spacing: 0.5rem;
-    }
-
     /* ── Post navigation ── */
     .postNav {
         display: grid;

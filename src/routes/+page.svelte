@@ -432,7 +432,7 @@
                         </div>
                     </article>
                 {/each}
-            {#else}
+            {:else}
                 <p style="text-align: center; color: #aaa;">No writing found...</p>
             {/if}
         </section>

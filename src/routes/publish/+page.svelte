@@ -862,7 +862,7 @@
                     </div>
 
                     <div class="formGroup">
-                        <label class="formLabel">Tags</label>
+                        <label class="formLabel" for="tag-input">Tags</label>
                         <div class="tagsContainer">
                             {#each tags as tag, i}
                                 <span class="tag">
@@ -875,6 +875,7 @@
                                 </span>
                             {/each}
                             <input
+                                id="tag-input"
                                 type="text"
                                 class="tagInput"
                                 placeholder={tags.length === 0 ? 'type & press enter...' : ''}
