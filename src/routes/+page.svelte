@@ -266,6 +266,9 @@
         sparkles
     } from '$lib';
 	import Win95Player from '$lib/components/Win95Player.svelte';
+
+    /** @type {import('./$types').PageData} */
+    export let data;
 </script>
 
 <div class="min-h-100">
@@ -412,25 +415,26 @@
         <section id="blog" class="blogSection">
             <h2 class="buttonsTitle" style="text-align: center; margin-bottom: 3rem;">Writing</h2>
 
-            <article class="post">
-                <h3 class="postTitle">
-                    <a href="/" class="link">Lorem Ipsum: Dolor sit</a>
-                </h3>
-                <div class="postDate">February 7, 2026</div>
-                <div class="postPreview">
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Impedit ex officia quas facilis culpa sunt consectetur natus reprehenderit ratione, quaerat magni. Animi harum atque non. Tempora eos veniam inventore modi?
-                </div>
-            </article>
-
-            <article class="post">
-                <h3 class="postTitle">
-                    <a href="/" class="link">Lorem Ipsum</a>
-                </h3>
-                <div class="postDate">December 15, 2025</div>
-                <div class="postPreview">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur maxime sint repellat dignissimos beatae accusantium accusamus, itaque dolorum, non quo quisquam est nisi assumenda. Distinctio optio maiores rerum voluptatum soluta.
-                </div>
-            </article>
+            {#if data.posts && data.posts.length > 0}
+                {#each data.posts as post}
+                    <article class="post">
+                        <h3 class="postTitle">
+                            <a href={`/post/${post.slug}`} class="link">{post.title}</a>
+                        </h3>
+                        <div class="postDate">
+                            {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        </div>
+                        <div class="postPreview">
+                            <!-- Basic truncation of the post content -->
+                            {@html post.content.replace(/<[^>]+>/g, '').length > 200 
+                                ? post.content.replace(/<[^>]+>/g, '').substring(0, 200) + '...' 
+                                : post.content.replace(/<[^>]+>/g, '')}
+                        </div>
+                    </article>
+                {/each}
+            {#else}
+                <p style="text-align: center; color: #aaa;">No writing found...</p>
+            {/if}
         </section>
 
         <footer class="footer">
