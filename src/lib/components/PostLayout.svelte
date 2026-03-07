@@ -32,7 +32,7 @@
         z-index: 10;
     }
 
-    /* ── Back navigation ── */
+
     .backNav {
         margin-bottom: 2.5rem;
     }
@@ -63,7 +63,7 @@
         transform: translateX(-3px);
     }
 
-    /* ── Article header ── */
+
     .articleHeader {
         margin-bottom: 3rem;
         border-bottom: 1px dashed #333;
@@ -124,7 +124,7 @@
         margin-top: 0.3rem;
     }
 
-    /* ── Article body ── */
+
     .articleBody {
         line-height: 1.8;
         color: #cfe6df;
@@ -233,7 +233,7 @@
         color: #b8dccc;
     }
 
-    /* ── Separator sparkles ── */
+
     .separator {
         display: flex;
         align-items: center;
@@ -249,7 +249,7 @@
         background: linear-gradient(90deg, transparent, #333, transparent);
     }
 
-    /* ── Post navigation ── */
+
     .postNav {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -315,7 +315,7 @@
         }
     }
 
-    /* ── Footer ── */
+
     .footer {
         text-align: center;
         margin-top: 4rem;
@@ -340,29 +340,17 @@
 
 <script>
     import { sky, sparkles } from '$lib';
+    import { getAdjacentPosts } from '$lib/posts.js';
 
-    // Example post data — in the future, this would come from a CMS or markdown files
-    const post = {
-        title: 'Lorem Ipsum: Dolor sit',
-        date: 'February 7, 2026',
-        readingTime: '5 min read',
-        tags: ['web', 'linux', 'misc'],
-    };
 
-    const prevPost = {
-        title: 'Lorem Ipsum',
-        href: '/publish',
-    };
+    let { title, date, readingTime, tags, slug, children } = $props();
 
-    const nextPost = {
-        title: 'Another Lorem Ipsum Post',
-        href: '/publish',
-    };
+    const { prev, next } = getAdjacentPosts(slug);
 </script>
 
 <svelte:head>
-    <title>{post.title} — Miguel Sena</title>
-    <meta name="description" content="A blog post by Miguel Sena: {post.title}" />
+    <title>{title} — Miguel Sena</title>
+    <meta name="description" content="A blog post by Miguel Sena: {title}" />
 </svelte:head>
 
 <div class="min-h-100">
@@ -370,7 +358,7 @@
     <div class="glow"></div>
 
     <main class="font-legible">
-        <!-- Back navigation -->
+
         <nav class="backNav">
             <a href="/#blog" class="backLink">
                 <span class="backArrow">←</span>
@@ -378,120 +366,57 @@
             </a>
         </nav>
 
-        <!-- Article header -->
+
         <header class="articleHeader">
-            <h1 class="articleTitle font-comic">{post.title}</h1>
+            <h1 class="articleTitle font-comic">{title}</h1>
 
             <div class="articleMeta">
-                <time>{post.date}</time>
+                <time>{date}</time>
                 <span class="metaDivider"></span>
-                <span>{post.readingTime}</span>
+                <span>{readingTime}</span>
             </div>
 
             <div class="tagsRow" style="margin-top: 0.8rem;">
-                {#each post.tags as tag}
+                {#each tags as tag}
                     <span class="tag">#{tag}</span>
                 {/each}
             </div>
         </header>
 
-        <!-- Article body -->
+
         <article class="articleBody">
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores fugiat
-                consequuntur ex ipsam autem labore, architecto iure cum ea, aliquam dolorum
-                eligendi minus quis. Vitae tempore repellendus soluta consequatur delectus.
-            </p>
-
-            <h2>Getting Started</h2>
-
-            <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-                veritatis et quasi <a href="/">architecto beatae</a> vitae dicta sunt explicabo.
-            </p>
-
-            <blockquote>
-                "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
-                sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."
-            </blockquote>
-
-            <p>
-                Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
-                adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
-                dolore magnam aliquam quaerat voluptatem.
-            </p>
-
-            <h2>The Technical Part</h2>
-
-            <p>
-                Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit
-                laboriosam, nisi ut aliquid ex ea commodi consequatur?
-            </p>
-
-            <pre><code>// example code block
-function hello() &#123;
-    console.log("hello from miguel's blog");
-    return 42;
-&#125;</code></pre>
-
-            <p>
-                Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil
-                molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
-            </p>
-
-            <h3>A Sub-section</h3>
-
-            <p>Here's an unordered list of important things:</p>
-
-            <ul>
-                <li>At vero eos et accusamus et iusto odio dignissimos</li>
-                <li>Ducimus qui blanditiis praesentium voluptatum</li>
-                <li>Deleniti atque corrupti quos dolores et quas molestias</li>
-                <li>Excepturi sint occaecati cupiditate non provident</li>
-            </ul>
-
-            <p>
-                Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore,
-                cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-                placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
-            </p>
-
-            <hr>
-
-            <p>
-                Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus
-                saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
-                Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis
-                voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
-            </p>
-
-            <p>
-                <strong>Thanks for reading!</strong> If you have any questions, feel free to
-                <a href="mailto:miguel@miguelsena.dev">email me</a>.
-            </p>
+            {@render children()}
         </article>
 
-        <!-- Separator -->
+
         <div class="separator">
             <div class="separatorLine"></div>
             <img src="{sparkles}" alt="" width="48" height="18" style="opacity: 0.7;">
             <div class="separatorLine"></div>
         </div>
 
-        <!-- Post navigation -->
+
         <nav class="postNav">
-            <a href={prevPost.href} class="navCard">
-                <div class="navCardLabel">← Previous</div>
-                <div class="navCardTitle">{prevPost.title}</div>
-            </a>
-            <a href={nextPost.href} class="navCard navCardNext">
-                <div class="navCardLabel">Next →</div>
-                <div class="navCardTitle">{nextPost.title}</div>
-            </a>
+            {#if prev}
+                <a href="/post/{prev.slug}" class="navCard">
+                    <div class="navCardLabel">← Previous</div>
+                    <div class="navCardTitle">{prev.title}</div>
+                </a>
+            {:else}
+                <div></div>
+            {/if}
+
+            {#if next}
+                <a href="/post/{next.slug}" class="navCard navCardNext">
+                    <div class="navCardLabel">Next →</div>
+                    <div class="navCardTitle">{next.title}</div>
+                </a>
+            {:else}
+                <div></div>
+            {/if}
         </nav>
 
-        <!-- Footer -->
+
         <footer class="footer">
             <p>
                 This site is <a href="/" class="link">open source</a>.

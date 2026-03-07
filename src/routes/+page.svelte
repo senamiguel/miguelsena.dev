@@ -196,7 +196,7 @@
 
     .blogSection {
         border-top: 1px dashed #333;
-        padding-top: 3rem;
+        padding: 3rem 1rem;
     }
 
 
@@ -266,9 +266,7 @@
         sparkles
     } from '$lib';
 	import Win95Player from '$lib/components/Win95Player.svelte';
-
-    /** @type {import('./$types').PageData} */
-    export let data;
+    import { posts } from '$lib/posts.js';
 </script>
 
 <div class="min-h-100">
@@ -415,20 +413,17 @@
         <section id="blog" class="blogSection">
             <h2 class="buttonsTitle" style="text-align: center; margin-bottom: 3rem;">Writing</h2>
 
-            {#if data.posts && data.posts.length > 0}
-                {#each data.posts as post}
+            {#if posts.length > 0}
+                {#each posts as post}
                     <article class="post">
                         <h3 class="postTitle">
                             <a href={`/post/${post.slug}`} class="link">{post.title}</a>
                         </h3>
                         <div class="postDate">
-                            {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                            {post.date}
                         </div>
                         <div class="postPreview">
-                            <!-- Basic truncation of the post content -->
-                            {@html post.content.replace(/<[^>]+>/g, '').length > 200 
-                                ? post.content.replace(/<[^>]+>/g, '').substring(0, 200) + '...' 
-                                : post.content.replace(/<[^>]+>/g, '')}
+                            {post.excerpt}
                         </div>
                     </article>
                 {/each}
