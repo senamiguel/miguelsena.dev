@@ -13,6 +13,11 @@
     font-family: "Segoe UI", Tahoma, sans-serif;
     font-size: 1em;
     width: 18em;
+    max-width: calc(100vw - 1rem);
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 50;
     background: var(--card-bg);
     border: 0.0625em solid;
     border-color: var(--card-border-light) var(--card-border-darker)
@@ -335,9 +340,16 @@
   .ctrl-pause::after {
     left: 60%;
   }
+
+  @media (max-width: 1024px) {
+    .win95-card {
+      bottom: 0.5rem;
+      right: 0.5rem;
+    }
+  }
   </style>
 
-  <div use:draggable class="win95-card cursor-grab absolute z-50" style="transform: translate({x}px, {y}px);">
+  <div class="win95-card z-50">
     <div class="card-titlebar" on:drag={window.alert("oi")} role="dialog" tabindex="">
       <span class="card-title-text">Media Player - My fav songs </span>
       <div class="card-controls">
@@ -387,7 +399,8 @@
     const STATES = {
       PLAYING: 'playing',
       PAUSED: 'paused',
-      STOPPED: 'stopped'
+      STOPPED: 'stopped',
+      LOADING: 'loading...'
     };
     const songs = [{
             "name": "Xtal",
@@ -417,20 +430,21 @@
     let trackDuration = ['0'.padStart(2,'0'),'0'.padStart(2,'0')];
     let icon = ['play','pause'];
     let currentIcon = icon[0];
-    let x = 0;
-    let y = 400;
     const setCurrentState = () =>{
-      currentIcon = ((currentState = Amplitude.getPlayerState()) === STATES.PLAYING) ? icon[1] : icon[0];  
+      const state = Amplitude.getPlayerState();
+      if (state !== STATES.PLAYING) {
+        currentState = state;
+      }
+      currentIcon = (state === STATES.PLAYING || currentState === STATES.LOADING) ? icon[1] : icon[0];
     }
     const handlePlay = () =>{
       if (currentState == STATES.PLAYING){
         Amplitude?.pause();
+        setCurrentState();
       }
       else{
         Amplitude?.play();
-        currentState = Amplitude.getPlayerState();
       }
-      setCurrentState();
     }
     const handleStop = () =>{
       Amplitude?.stop();
@@ -466,40 +480,22 @@
       currentPercentage = ratio * 100;
       Amplitude.setSongPlayedPercentage(currentPercentage);
     }
-    function draggable(node) {
-      let startX;
-      let startY;
-      const handlePointerDown = (event)=> {
-        event.preventDefault();
-        startX = event.clientX - x;
-        startY = event.clientY - y;
-        window.addEventListener('pointermove', handlePointerMove);
-        window.addEventListener('pointerup', handlePointerUp);
-      }
-
-      function handlePointerMove(event) {
-        x = event.clientX - startX;
-        y = event.clientY - startY;
-      }
-      function handlePointerUp() {
-        window.removeEventListener('pointermove', handlePointerMove);
-        window.removeEventListener('pointerup', handlePointerUp);
-      }
-      node.addEventListener('pointerdown', handlePointerDown);
-      return {
-        destroy() {
-          node.removeEventListener('pointerdown', handlePointerDown);
-        }
-      }
-    }
     onMount(async () => {
       Amplitude = (await import('amplitudejs')).default;
           Amplitude.init({
-            songs,preload: 'auto', callbacks: {
+            songs, preload: 'metadata', callbacks: {
               loadeddata: function(){
                 currentSongIndex = Amplitude.getActiveIndex();
                 trackDuration = formatMinutesSeconds(Amplitude.getSongDuration());
                 Amplitude.setRepeat(true);
+                if (currentState === STATES.LOADING) currentState = STATES.STOPPED;
+              },
+              play: function(){
+                currentState = STATES.LOADING;
+                currentIcon = icon[1];
+              },
+              playing: function(){
+                currentState = STATES.PLAYING;
               },
               timeupdate: function(){
                 currentDuration = formatMinutesSeconds(Amplitude.getSongPlayedSeconds());
