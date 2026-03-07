@@ -295,27 +295,27 @@
                 <h3 class="columnTitle">Projects</h3>
                 <ul class="list">
                     <li class="listItem">
-                        <span class="year">2024:</span>
-                        <a href="#project-invoicehub" class="link">InvoiceHub</a>
+                        <span class="year">2025:</span>
+                        <a href="https://github.com/senamiguel/portfolio.miguelsena.dev" target="_blank" rel="noopener noreferrer" class="link">Portfolio Terminal</a>
+                    </li>
+                    <li class="listItem">
+                        <span class="year">2025:</span>
+                        <a href="https://github.com/senamiguel/CODEJUNIOR-TALENTSCOPE" target="_blank" rel="noopener noreferrer" class="link">TalentScout</a>
+                    </li>
+                    <li class="listItem">
+                        <span class="year">2026:</span>
+                        <a href="https://github.com/senamiguel/miguelsena.dev" target="_blank" rel="noopener noreferrer" class="link">miguelsena.dev</a>
+                    </li>
+                    <li class="listItem">
+                        <span class="year">2025:</span>
+                        <a href="https://senamiguel.github.io/roko-basilisk/" target="_blank" rel="noopener noreferrer" class="link">roko-basilisk</a>
                     </li>
                     <li class="listItem">
                         <span class="year">2024:</span>
-                        <a href="#project-taskflow" class="link">TaskFlow</a>
+                        <a href="https://github.com/senamiguel/PriceAlert-Ragnatales" target="_blank" rel="noopener noreferrer" class="link">PriceAlert Ragnatales</a>
                     </li>
                     <li class="listItem">
-                        <span class="year">2023:</span>
-                        <a href="/portfolio" class="link">Portfolio Terminal</a>
-                    </li>
-                    <li class="listItem">
-                        <span class="year">2022:</span>
-                        <a href="#project-ui-kit" class="link">Retro UI Kit</a>
-                    </li>
-                    <li class="listItem">
-                        <span class="year">2021:</span>
-                        <a href="#project-finance" class="link">Blazor Finance</a>
-                    </li>
-                    <li class="listItem">
-                        <a href="/portfolio" class="link" style="opacity: 0.7; font-size: 0.9rem;">Show more</a>
+                        <a href="https://github.com/senamiguel?tab=repositories" target="_blank" rel="noopener noreferrer" class="link" style="opacity: 0.7; font-size: 0.9rem;">Show more</a>
                     </li>
                 </ul>
             </div>
@@ -434,7 +434,7 @@
 
         <footer class="footer">
             <p>
-                This site is <a href="/" class="link">open source</a>.
+                This site is <a href="https://github.com/senamiguel/miguelsena.dev" target="_blank" rel="noopener noreferrer" class="link">open source</a>.
                 <br />
                 © 2026 Miguel Sena. copyleft.
             </p>
