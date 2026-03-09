@@ -272,7 +272,6 @@
 <div class="min-h-100">
     <div class="backgroundImage" style:--bg-img="url('{sky}')" ></div>
     <div class="glow"></div>
-    <Win95Player/>
 
     <main class="font-legible">
         <header class="headerContainer">
@@ -286,6 +285,10 @@
                 Hi. I'm Miguel. I build things for the internet. Sometimes useful. Sometimes weird. This is my corner of the web.
             </p>
         </section>
+
+        <div style="margin: 1.5rem 0;">
+            <Win95Player/>
+        </div>
 
         <div class="grid">
             <div class="column">
